@@ -6,19 +6,18 @@
 from string import *
 import numpy as np
 
-class hexTile():
-    'Class Definition for Catan Board Hexagonal Tile'
+class catanBoard(hexTile):
+    'Class Definition for Catan Board '
 
     #Object Creation
-    def __init__(self, resourceName, num):
+    #Takes
+    def __init__(self,):
         self.resource = resourceName
         self.num = num
 
     #Function to Display Hex Info
-    def displayHexInfo(self):
-        print(self.resource, self.num)
+    def displayBoard(self):
+        
     
 
 #Test Code
-testHex = hexTile('Ore', 8)
-testHex.displayHexInfo()
