@@ -18,3 +18,7 @@ class hexTile():
     def displayHexInfo(self):
         print(self.resource, self.num)
     
+
+#Test Code
+testHex = hexTile('Ore', 8)
+testHex.displayHexInfo()
