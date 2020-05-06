@@ -14,6 +14,8 @@ class hexTile():
     #Function to Display Hex Info
     def displayHexInfo(self):
         print(self.resource, self.num)
+
+
     
 
 #Test Code
