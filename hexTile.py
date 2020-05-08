@@ -13,19 +13,21 @@ class hexTile():
 
     #Object Creation - specify the resource, num, center and neighbor list
     #Center is a point and neighborList is a list of hexTiles
-    def __init__(self, hexResource, center, neighborList=None):
+    #hexIndex is a number from 0-18 specifying the Hex's position
+    def __init__(self, hexIndex, hexResource, center, neighborList=None):
         self.resource = hexResource
         self.coord = center
+        self.index = hexIndex
         self.neighborList = neighborList
 
     #Function to update hex neighbors
     def updateNeighbors(self):
-        
+        return None
 
 
     #Function to Display Hex Info
     def displayHexInfo(self):
-        print('Resource:{}; Center:{}'.format(self.resource, self.coord))
+        print('Index:{}; Resource:{}; Center:{}'.format(self.index, self.resource, self.coord))
         return None
         
 
@@ -40,6 +42,6 @@ class hexTile():
     
 
 #Test Code
-# testHex = hexTile(Resource('Ore', 8), Point(2,3), [hexTile(Resource('Wheat', 11), Point(5,6)), hexTile(Resource('Brick', 11), Point(7,4))])
+# testHex = hexTile(0, Resource('Ore', 8), Point(2,3), [hexTile(2, Resource('Wheat', 11), Point(5,6)), hexTile(3, Resource('Brick', 11), Point(7,4))])
 # testHex.displayHexInfo()
 # testHex.displayHexNeighbors()

@@ -5,6 +5,7 @@
 from string import *
 import numpy as np
 from hexTile import *
+import networkx as nx
 #import pygame
 
 ###Class to implement Catan board
@@ -14,24 +15,32 @@ class catanBoard():
     #Object Creation - creates a random board configuration with hexTiles
     #Takes
     def __init__(self):
-        self.HexTileList = [] #Dictionary to store all hextiles
+        self.HexTileList = [] #List to store all hextiles
         self.resourcesList = self.getRandomResourceList()
 
         #Get a random permutation of indices 0-18 to use with the resource list
         randomIndices = np.random.permutation([i for i in range(len(self.resourcesList))])
-        print(randomIndices)
+        
+        hexIndex_i = 0 #initialize hexIndex at 0
+        #Neighbors are specified in adjacency matrix - hard coded
 
-        #Generate the hexes and the graphs with the Centers and Resources defined
+        #Generate the hexes and the graphs with the Index, Centers and Resources defined
         for rand_i in randomIndices:
-            #Get the list of neighbors for this hexTile
-            newHexTile = hexTile(self.resourcesList[rand_i], Point(2,3)
-        #Define the central Hex
-        #hex0 = hexTile()
+            #Get the coordinates of the new hex, indexed by hexIndex_i
+            hexCoords = self.getHexCoords(hexIndex_i)
+            hexCoords = Point(2,3)
+
+            #Create the new hexTile with index and append + increment index
+            newHexTile = hexTile(hexIndex_i, self.resourcesList[rand_i], hexCoords)
+            self.HexTileList.append(newHexTile)
+            hexIndex_i += 1
+
+        print(self.HexTileList)
 
         return None
 
-    #Function to add a hexTile - specified from parent Hex and 
-    def addHexTile(self, parentHex, location):
+    #Function to get coordinates by index, to add a hexTile
+    def getHexCoords(self, hexInd):
         return None
 
     #Function to generate a random permutation of resources
@@ -52,11 +61,14 @@ class catanBoard():
             else:
                 resourceList.append(Resource(r, None))
 
-        print(resourceList)
-
         return resourceList
 
-    #Function to Display Hex Info
+    #Function to generate a graph of the board
+    def generateBoardGraph(self):
+        self.boardGraph = {} #create a dictionary to store the graph
+
+
+    #Function to Display Catan Board Info
     def displayBoard(self):
         return None
     
