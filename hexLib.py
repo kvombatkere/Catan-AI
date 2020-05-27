@@ -8,9 +8,6 @@
 import collections
 import math
 
-# import pygame
-# pygame.init()
-
 #Define the x y point for pixels
 Point = collections.namedtuple("Point", ["x", "y"])
 Axial_Point = collections.namedtuple("Axial_Point", ['q', 'r'])
@@ -133,6 +130,9 @@ def polygon_corners(layout, h):
         corners.append(Point(center.x + offset.x, center.y + offset.y))
     return corners
 
+
+# import pygame
+# pygame.init()
 
 # def test_layout():
 #     #h = Hex(2, -1, -1)
