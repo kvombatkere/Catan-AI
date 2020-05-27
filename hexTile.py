@@ -3,20 +3,22 @@
 
 #IMPORTS
 import collections
+from hexLib import *
 
 ##Class to implement Catan board Hexagonal Tile
-Point = collections.namedtuple("Point", ["x", "y"])
 Resource = collections.namedtuple("Resource", ["type", "num"])
 
 class hexTile():
     'Class Definition for Catan Board Hexagonal Tile'
 
     #Object Creation - specify the resource, num, center and neighbor list
-    #Center is a point and neighborList is a list of hexTiles
+    #Center is a point in axial coordinates q, r and neighborList is a list of hexTiles
     #hexIndex is a number from 0-18 specifying the Hex's position
-    def __init__(self, hexIndex, hexResource, center, neighborList=None):
+    def __init__(self, hexIndex, hexResource, axialCoords, neighborList=None):
+        self.hex = Axial_Hex(axialCoords) #Hex representation of this tile
         self.resource = hexResource
-        self.coord = center
+        self.coord = axialCoords
+        self.pixelCenter = None #Pixel coordinates of hex as Point(x, y)
         self.index = hexIndex
         self.neighborList = neighborList
 
@@ -27,7 +29,7 @@ class hexTile():
 
     #Function to Display Hex Info
     def displayHexInfo(self):
-        print('Index:{}; Hex:{}; Center:{}'.format(self.index, self.resource, self.coord))
+        print('Index:{}; Hex:{}; Axial Coord:{}'.format(self.index, self.resource, self.coord))
         return None
         
 

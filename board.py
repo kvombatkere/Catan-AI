@@ -5,6 +5,7 @@
 from string import *
 import numpy as np
 from hexTile import *
+from hexLib import *
 import networkx as nx
 #import matplotlib.pyplot as plt
 import pygame
@@ -41,8 +42,8 @@ class catanBoard():
 
     def getHexCoords(self, hexInd):
         #Dictionary to store Axial Coordinates (q, r) by hexIndex
-        coordDict = {0:Point(0,0), 1:Point(0,-1), 2:Point(1,-1), 3:Point(1,0), 4:Point(0,1), 5:Point(-1,1), 6:Point(-1,0), 7:Point(0,-2), 8:Point(1,-2), 9:Point(2,-2), 10:Point(2,-1),
-                        11:Point(2,0), 12:Point(1,1), 13:Point(0,2), 14:Point(-1,2), 15:Point(-2,2), 16:Point(-2,1), 17:Point(-2,0), 18:Point(-1,-1)}
+        coordDict = {0:Axial_Point(0,0), 1:Axial_Point(0,-1), 2:Axial_Point(1,-1), 3:Axial_Point(1,0), 4:Axial_Point(0,1), 5:Axial_Point(-1,1), 6:Axial_Point(-1,0), 7:Axial_Point(0,-2), 8:Axial_Point(1,-2), 9:Axial_Point(2,-2), 10:Axial_Point(2,-1),
+                        11:Axial_Point(2,0), 12:Axial_Point(1,1), 13:Axial_Point(0,2), 14:Axial_Point(-1,2), 15:Axial_Point(-2,2), 16:Axial_Point(-2,1), 17:Axial_Point(-2,0), 18:Axial_Point(-1,-1)}
         return coordDict[hexInd]
 
     #Function to generate a random permutation of resources
@@ -78,12 +79,34 @@ class catanBoard():
 
     #Use pygame to display the board
     def displayBoard(self):
-        size = width, height = 1200, 900
+        #Dictionary to store RGB Color values
+        colorDict = {"BRICK":(255,51,51), "ORE":(128, 128, 128), "WHEAT":(255,255,51), "WOOD":(0,153,0), "SHEEP":(51,255,51), "DESERT":(255,255,204)}
+        
+        size = width, height = 1000, 800
         screen = pygame.display.set_mode(size)
         pygame.display.set_caption('Catan')
+        font_resource = pygame.font.Font(pygame.font.get_default_font(), 15)
 
+        flat = Layout(layout_flat, Point(80.0, 80.0), Point(width/2, height/2)) #specify Layout
 
-    
+        startTime = pygame.time.get_ticks()
+        runTime = 0
+        
+        while runTime < 10000:
+            #Render each hexTile
+            for hexTile in self.hexTileList:
+                hexTileCorners = polygon_corners(flat, hexTile.hex)
+                hexTileColor_rgb = colorDict[hexTile.resource.type]
+                pygame.draw.polygon(screen, pygame.Color(hexTileColor_rgb[0],hexTileColor_rgb[1], hexTileColor_rgb[2]), hexTileCorners, width==0)
+
+                hexTile.pixelCenter = hex_to_pixel(flat, hexTile.hex)
+                resourceText = font_resource.render(str(hexTile.resource.type) + " (" +str(hexTile.resource.num) + ")", False, (0,0,0))
+                screen.blit(resourceText, (hexTile.pixelCenter.x -25, hexTile.pixelCenter.y))
+            
+            pygame.display.update()
+            runTime = pygame.time.get_ticks() - startTime
+        
+
 
 
 #Test Code
