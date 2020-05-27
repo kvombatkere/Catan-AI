@@ -6,7 +6,10 @@ from string import *
 import numpy as np
 from hexTile import *
 import networkx as nx
-#import pygame
+#import matplotlib.pyplot as plt
+import pygame
+
+pygame.init()
 
 ###Class to implement Catan board
 ##Use a graph representation for the board
@@ -15,7 +18,7 @@ class catanBoard():
     #Object Creation - creates a random board configuration with hexTiles
     #Takes
     def __init__(self):
-        self.HexTileList = [] #List to store all hextiles
+        self.hexTileList = [] #List to store all hextiles
         self.resourcesList = self.getRandomResourceList()
 
         #Get a random permutation of indices 0-18 to use with the resource list
@@ -28,20 +31,19 @@ class catanBoard():
         for rand_i in randomIndices:
             #Get the coordinates of the new hex, indexed by hexIndex_i
             hexCoords = self.getHexCoords(hexIndex_i)
-            hexCoords = Point(2,3)
 
             #Create the new hexTile with index and append + increment index
             newHexTile = hexTile(hexIndex_i, self.resourcesList[rand_i], hexCoords)
-            self.HexTileList.append(newHexTile)
+            self.hexTileList.append(newHexTile)
             hexIndex_i += 1
 
-        print(self.HexTileList)
-
         return None
 
-    #Function to get coordinates by index, to add a hexTile
     def getHexCoords(self, hexInd):
-        return None
+        #Dictionary to store Axial Coordinates (q, r) by hexIndex
+        coordDict = {0:Point(0,0), 1:Point(0,-1), 2:Point(1,-1), 3:Point(1,0), 4:Point(0,1), 5:Point(-1,1), 6:Point(-1,0), 7:Point(0,-2), 8:Point(1,-2), 9:Point(2,-2), 10:Point(2,-1),
+                        11:Point(2,0), 12:Point(1,1), 13:Point(0,2), 14:Point(-1,2), 15:Point(-2,2), 16:Point(-2,1), 17:Point(-2,0), 18:Point(-1,-1)}
+        return coordDict[hexInd]
 
     #Function to generate a random permutation of resources
     def getRandomResourceList(self):
@@ -69,11 +71,22 @@ class catanBoard():
 
 
     #Function to Display Catan Board Info
-    def displayBoard(self):
+    def displayBoardInfo(self):
+        for tile in self.hexTileList:
+            tile.displayHexInfo()
         return None
+
+    #Use pygame to display the board
+    def displayBoard(self):
+        size = width, height = 1200, 900
+        screen = pygame.display.set_mode(size)
+        pygame.display.set_caption('Catan')
+
+
     
 
 
 #Test Code
 testBoard = catanBoard()
-
+testBoard.displayBoardInfo()
+testBoard.displayBoard()

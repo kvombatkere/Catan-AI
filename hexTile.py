@@ -21,13 +21,13 @@ class hexTile():
         self.neighborList = neighborList
 
     #Function to update hex neighbors
-    def updateNeighbors(self):
+    def updateNeighbors(self):  
         return None
 
 
     #Function to Display Hex Info
     def displayHexInfo(self):
-        print('Index:{}; Resource:{}; Center:{}'.format(self.index, self.resource, self.coord))
+        print('Index:{}; Hex:{}; Center:{}'.format(self.index, self.resource, self.coord))
         return None
         
 
