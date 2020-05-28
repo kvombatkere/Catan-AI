@@ -92,16 +92,18 @@ class catanBoard():
         startTime = pygame.time.get_ticks()
         runTime = 0
         
-        while runTime < 10000:
+        while runTime < 5000:
             #Render each hexTile
             for hexTile in self.hexTileList:
                 hexTileCorners = polygon_corners(flat, hexTile.hex)
                 hexTileColor_rgb = colorDict[hexTile.resource.type]
                 pygame.draw.polygon(screen, pygame.Color(hexTileColor_rgb[0],hexTileColor_rgb[1], hexTileColor_rgb[2]), hexTileCorners, width==0)
+                #print(hexTile.index, hexTileCorners)
 
-                hexTile.pixelCenter = hex_to_pixel(flat, hexTile.hex)
-                resourceText = font_resource.render(str(hexTile.resource.type) + " (" +str(hexTile.resource.num) + ")", False, (0,0,0))
-                screen.blit(resourceText, (hexTile.pixelCenter.x -25, hexTile.pixelCenter.y))
+                hexTile.pixelCenter = hex_to_pixel(flat, hexTile.hex) #Get pixel center coordinates of hex
+                if(hexTile.resource.type != 'DESERT'): #skip desert text/number
+                    resourceText = font_resource.render(str(hexTile.resource.type) + " (" +str(hexTile.resource.num) + ")", False, (0,0,0))
+                    screen.blit(resourceText, (hexTile.pixelCenter.x -25, hexTile.pixelCenter.y)) #add text to hex
             
             pygame.display.update()
             runTime = pygame.time.get_ticks() - startTime
