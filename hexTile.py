@@ -41,7 +41,18 @@ class hexTile():
 
         return None
 
+
+#Class definition of a Vertex
+class Vertex():
     
+    def __init__(self, pixelCoord, adjHexIndex):
+        self.pixelCoordinates = pixelCoord
+        self.edgeList = [] #List to store adjacent Vertices
+        self.adjacentHexList = [adjHexIndex] #List to store indices of 3 adjacent hexes
+        self.edgeState = [False, False, False] #List to determine if a road is built on edge
+        self.state = 'Colonisable' #determine if the vertex is colonisable ('City', 'Settlement')
+
+
 
 #Test Code
 # testHex = hexTile(0, Resource('Ore', 8), Point(2,3), [hexTile(2, Resource('Wheat', 11), Point(5,6)), hexTile(3, Resource('Brick', 11), Point(7,4))])

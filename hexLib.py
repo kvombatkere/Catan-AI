@@ -127,7 +127,7 @@ def polygon_corners(layout, h):
     center = hex_to_pixel(layout, h)
     for i in range(0, 6):
         offset = hex_corner_offset(layout, i)
-        corners.append(Point(center.x + offset.x, center.y + offset.y))
+        corners.append(Point(round(center.x + offset.x,2), round(center.y + offset.y,2)))
     return corners
 
 
