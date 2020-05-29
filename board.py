@@ -143,7 +143,7 @@ class catanBoard():
         startTime = pygame.time.get_ticks()
         runTime = 0
         
-        while runTime < 2000:
+        while runTime < 10000:
             #Render each hexTile
             for hexTile in self.hexTileList:
                 hexTileCorners = polygon_corners(self.flat, hexTile.hex)
