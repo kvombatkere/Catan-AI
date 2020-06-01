@@ -7,8 +7,9 @@
 class player():
     'Class Definition for Game Player'
 
-    #Initialize a game player
-    def __init__(self):
+    #Initialize a game player, we use A, B and C to identify
+    def __init__(self, name):
+        self.playerName = name
         self.victoryPoints = 0
         self.visibleVictoryPoints = 0
 
@@ -32,6 +33,12 @@ class player():
     #function to build a settlement on vertex v
     def build_settlement(self, v):
         'Update buildGraph to add a settlement on vertex v'
+        #Take input from Player on where to build settlement
+        #Check if valid location (Does this player have a road leading upto settlement)
+            #Check if player has correct resources
+
+                #Update player resources and boardGraph with transaction
+
 
     #function to build a road from vertex v1 to vertex v2
     def build_road(self, v1, v2):
@@ -40,14 +47,14 @@ class player():
     #function to build a city on vertex v
     def build_city(self, v):
         'Upgrade existing settlement to city in buildGraph'
-
-    #function to draw a Development Card
-    def draw_devCard(self):
-        'Draw a random dev card from stack and update self.devcards'
     
     #function to end turn
     def end_turn():
         'Pass turn to next player and update game state'
+
+    #function to draw a Development Card
+    def draw_devCard(self):
+        'Draw a random dev card from stack and update self.devcards'
 
     #function to play a development card
     def play_devCard():

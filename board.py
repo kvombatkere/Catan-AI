@@ -26,8 +26,12 @@ class catanBoard():
         self.edgeLength = 80 #Specify for hex size
 
         #Use pygame to display the board
-        self.size = width, height = 1000, 800
-        self.flat = Layout(layout_flat, Point(self.edgeLength, self.edgeLength), Point(width/2, height/2)) #specify Layout
+        self.size = self.width, self.height = 1000, 800
+        self.flat = Layout(layout_flat, Point(self.edgeLength, self.edgeLength), Point(self.width/2, self.height/2)) #specify Layout
+
+        self.screen = pygame.display.set_mode(self.size)
+        pygame.display.set_caption('Catan')
+        self.font_resource = pygame.font.Font(pygame.font.get_default_font(), 15)
 
         #Get a random permutation of indices 0-18 to use with the resource list
         randomIndices = np.random.permutation([i for i in range(len(self.resourcesList))])
@@ -133,32 +137,26 @@ class catanBoard():
     #Function to display the board
     def displayBoard(self):
         #Dictionary to store RGB Color values
-        colorDict = {"BRICK":(255,51,51), "ORE":(128, 128, 128), "WHEAT":(255,255,51), "WOOD":(0,153,0), "SHEEP":(51,255,51), "DESERT":(255,255,204)}
-        
-        size = width, height = 1000, 800
-        screen = pygame.display.set_mode(self.size)
-        pygame.display.set_caption('Catan')
-        font_resource = pygame.font.Font(pygame.font.get_default_font(), 15)
+        colorDict_RGB = {"BRICK":(255,51,51), "ORE":(128, 128, 128), "WHEAT":(255,255,51), "WOOD":(0,153,0), "SHEEP":(51,255,51), "DESERT":(255,255,204)}
 
-        startTime = pygame.time.get_ticks()
-        runTime = 0
-        
-        while runTime < 10000:
-            #Render each hexTile
-            for hexTile in self.hexTileList:
-                hexTileCorners = polygon_corners(self.flat, hexTile.hex)
+        #Render each hexTile
+        for hexTile in self.hexTileList:
+            hexTileCorners = polygon_corners(self.flat, hexTile.hex)
 
-                hexTileColor_rgb = colorDict[hexTile.resource.type]
-                pygame.draw.polygon(screen, pygame.Color(hexTileColor_rgb[0],hexTileColor_rgb[1], hexTileColor_rgb[2]), hexTileCorners, width==0)
-                #print(hexTile.index, hexTileCorners)
+            hexTileColor_rgb = colorDict_RGB[hexTile.resource.type]
+            pygame.draw.polygon(self.screen, pygame.Color(hexTileColor_rgb[0],hexTileColor_rgb[1], hexTileColor_rgb[2]), hexTileCorners, self.width==0)
+            #print(hexTile.index, hexTileCorners)
 
-                hexTile.pixelCenter = hex_to_pixel(self.flat, hexTile.hex) #Get pixel center coordinates of hex
-                if(hexTile.resource.type != 'DESERT'): #skip desert text/number
-                    resourceText = font_resource.render(str(hexTile.resource.type) + " (" +str(hexTile.resource.num) + ")", False, (0,0,0))
-                    screen.blit(resourceText, (hexTile.pixelCenter.x -25, hexTile.pixelCenter.y)) #add text to hex
+            hexTile.pixelCenter = hex_to_pixel(self.flat, hexTile.hex) #Get pixel center coordinates of hex
+            if(hexTile.resource.type != 'DESERT'): #skip desert text/number
+                resourceText = self.font_resource.render(str(hexTile.resource.type) + " (" +str(hexTile.resource.num) + ")", False, (0,0,0))
+                self.screen.blit(resourceText, (hexTile.pixelCenter.x -25, hexTile.pixelCenter.y)) #add text to hex
 
-            pygame.display.update()
-            runTime = pygame.time.get_ticks() - startTime
+        pygame.display.update()
+
+        #startTime = pygame.time.get_ticks()
+        #runTime = 0
+        #runTime = pygame.time.get_ticks() - startTime
 
         return None
         
