@@ -52,6 +52,16 @@ class Vertex():
         self.edgeState = [False, False, False] #List to determine if a road is built on edge
         self.state = 'Colonisable' #determine if the vertex is colonisable ('City', 'Settlement')
 
+        self.edgeLength = 80 #Specify for hex size
+
+    #Function to return if a vertex v1 is adjacent to another v2
+    def isAdjacent(self, v1, v2):
+        dist = ((v1.pixelCoordinates.x - v2.pixelCoordinates.x)**2 + (v1.pixelCoordinates.y - v2.pixelCoordinates.y)**2)**0.5
+        if(round(dist) == self.edgeLength):
+            return True
+
+        return False
+
 
 
 #Test Code

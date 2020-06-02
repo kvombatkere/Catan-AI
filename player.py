@@ -8,27 +8,31 @@ class player():
     'Class Definition for Game Player'
 
     #Initialize a game player, we use A, B and C to identify
-    def __init__(self, name):
-        self.playerName = name
+    def __init__(self, playerName, playerColor):
+        self.name = playerName
+        self.color = playerColor
         self.victoryPoints = 0
         self.visibleVictoryPoints = 0
 
         self.settlementsLeft = 5
         self.roadsLeft = 15
         self.citiesLeft = 4
-        self.resources = {} #Dictionary that keeps track of resource amounts
+        self.resources = {'ORE':3, 'BRICK':1, 'WHEAT':4, 'WOOD':1, 'SHEEP':4} #Dictionary that keeps track of resource amounts
 
         self.knightsPlayed = 0
 
         #Undirected Graph to keep track of which vertices and edges player has colonised
         #Every time a player's build graph is updated the gameBoardGraph must also be updated
-        self.buildGraph = None 
+
+        #Each of the 3 lists store vertex information - Roads are stores with tuples of vertex pairs
+        self.buildGraph = {'ROADS':[], 'SETTLEMENTS':[], 'CITIES':[]} 
 
         self.devCards = None #Dev cards in possession
 
-    #function to generate random dice roll
-    def roll_dice():
-        'Update resource amounts of all players'
+    #function to update player resources based on dice roll
+    def update_resources(self, diceRoll):
+        'Update resource amount of players'
+
 
     #function to build a settlement on vertex v
     def build_settlement(self, v):
@@ -36,13 +40,23 @@ class player():
         #Take input from Player on where to build settlement
         #Check if valid location (Does this player have a road leading upto settlement)
             #Check if player has correct resources
-
                 #Update player resources and boardGraph with transaction
+
+        self.buildGraph['SETTLEMENTS'].append(v)
+        self.settlementsLeft -= 1
+
+    #Function to get a list of available vertices for settlements
 
 
     #function to build a road from vertex v1 to vertex v2
     def build_road(self, v1, v2):
         'Update buildGraph to add a road on edge v1 - v2'
+        self.buildGraph['ROADS'].append((v1,v2))
+        self.roadsLeft -= 1
+
+        #Update player resources
+        self.resources['BRICK'] -= 1
+        self.resources['WOOD'] -= 1
 
     #function to build a city on vertex v
     def build_city(self, v):

@@ -6,6 +6,7 @@ from string import *
 import numpy as np
 from hexTile import *
 from hexLib import *
+from player import *
 import networkx as nx
 #import matplotlib.pyplot as plt
 import pygame
@@ -14,7 +15,7 @@ pygame.init()
 
 ###Class to implement Catan board
 ##Use a graph representation for the board
-class catanBoard():
+class catanBoard(hexTile, Vertex, player):
     'Class Definition for Catan Board '
     #Object Creation - creates a random board configuration with hexTiles
     #Takes
@@ -159,7 +160,11 @@ class catanBoard():
         #runTime = pygame.time.get_ticks() - startTime
 
         return None
-        
+
+
+    #Function to display a road on the board
+    def draw_road(self, edgeToDraw, roadColor):
+        pygame.draw.line(self.screen, pygame.Color(roadColor), edgeToDraw[0], edgeToDraw[1], 15)
 
 
 
