@@ -51,7 +51,7 @@ class Vertex():
         self.adjacentHexList = [adjHexIndex] #List to store indices of 3 adjacent hexes
         self.edgeState = [False, False, False] #List to determine if a road is built on edge
 
-        self.state = {'Player':None, 'Settlement':False, 'City':False} #Vertex state 
+        self.state = {'Player': None, 'Settlement':False, 'City':False} #Vertex state 
         self.isColonised = False
 
         self.edgeLength = 80 #Specify for hex size

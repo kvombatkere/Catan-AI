@@ -162,14 +162,18 @@ class catanBoard(hexTile, Vertex):
 
         return None
 
+    #Function to display the main catanBoard
+    #def displayMainBoard(self):
+
 
     #Function to draw a road on the board
     def draw_road(self, edgeToDraw, roadColor):
-        pygame.draw.line(self.screen, pygame.Color(roadColor), edgeToDraw[0], edgeToDraw[1], 12)
+        pygame.draw.line(self.screen, pygame.Color(roadColor), edgeToDraw[0], edgeToDraw[1], 10)
 
     #Function to draw a road on the board
     def draw_possible_road(self, edgeToDraw, roadColor):
-        pygame.draw.line(self.screen, pygame.Color(roadColor), edgeToDraw[0], edgeToDraw[1], 2)
+        roadRect = pygame.draw.line(self.screen, pygame.Color(roadColor), edgeToDraw[0], edgeToDraw[1], 3)
+        return roadRect
 
     #Function to draw a settlement on the board at vertexToDraw
     def draw_settlement(self, vertexToDraw, color):
@@ -185,6 +189,7 @@ class catanBoard(hexTile, Vertex):
     #Return these roads as tuples of vertex pairs
     def get_potential_roads(self, player):
         colonisableRoads = []
+        colonisableRoadRects = []
         #Check potential roads from each road the player already has
         for existingRoad in player.buildGraph['ROADS']:
             for vertex_i in existingRoad: #Iterate over both vertices of this road
@@ -194,8 +199,10 @@ class catanBoard(hexTile, Vertex):
                         colonisableRoads.append((vertex_i, v_i))
         
         for road in colonisableRoads:    
-            self.draw_possible_road(road, player.color)
-        return colonisableRoads
+            roadRect = self.draw_possible_road(road, player.color)
+            colonisableRoadRects.append(roadRect)
+    
+        return colonisableRoadRects, colonisableRoads
     
     #Function to update boardGraph with Road by player
     def updateBoardGraph_road(self, v_coord1, v_coord2, player):
@@ -209,7 +216,7 @@ class catanBoard(hexTile, Vertex):
             if(v == v_coord1):
                 self.boardGraph[v_coord2].edgeState[indx] = True
         
-        self.draw_road([v_coord1, v_coord2], player.color) #Draw the settlement
+        #self.draw_road([v_coord1, v_coord2], player.color) #Draw the settlement
 
 
     #Function to update boardGraph with settlement on vertex v
@@ -218,7 +225,7 @@ class catanBoard(hexTile, Vertex):
         self.boardGraph[v_coord].state['Settlement'] = True
         self.boardGraph[v_coord].isColonised = True 
 
-        self.draw_settlement(v_coord, player.color) #Draw the settlement
+        #self.draw_settlement(v_coord, player.color) #Draw the settlement
 
 
     #Function to get a hexTile with a particular number

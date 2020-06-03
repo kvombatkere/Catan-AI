@@ -18,7 +18,7 @@ class player():
         self.settlementsLeft = 5
         self.roadsLeft = 15
         self.citiesLeft = 4
-        self.resources = {'ORE':0, 'BRICK':4, 'WHEAT':2, 'WOOD':4, 'SHEEP':2} #Dictionary that keeps track of resource amounts
+        self.resources = {'ORE':0, 'BRICK':5, 'WHEAT':2, 'WOOD':5, 'SHEEP':2} #Dictionary that keeps track of resource amounts
 
         self.knightsPlayed = 0
 
@@ -76,6 +76,8 @@ class player():
                 self.resources['WOOD'] -= 1
 
                 board.updateBoardGraph_road(v1, v2, self)
+                print('Player {} Successfully Built a road'.format(self.name))
+
         else:
             print("Insufficient Resources to Build Road - Need 1 BRICK, 1 WOOD")
 
