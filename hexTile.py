@@ -50,9 +50,16 @@ class Vertex():
         self.edgeList = [] #List to store adjacent Vertices
         self.adjacentHexList = [adjHexIndex] #List to store indices of 3 adjacent hexes
         self.edgeState = [False, False, False] #List to determine if a road is built on edge
-        self.state = 'Colonisable' #determine if the vertex is colonisable ('City', 'Settlement')
+
+        self.state = {'Player':None, 'Settlement':False, 'City':False} #Vertex state 
+        self.isColonised = False
 
         self.edgeLength = 80 #Specify for hex size
+
+    #Function to get a Vertex by its pixel coordinates
+    def getVertex_fromPixel(self, coords):
+        if(self.pixelCoordinates == coords):
+            return self
 
     #Function to return if a vertex v1 is adjacent to another v2
     def isAdjacent(self, v1, v2):

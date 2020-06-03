@@ -15,14 +15,14 @@ pygame.init()
 
 ###Class to implement Catan board
 ##Use a graph representation for the board
-class catanBoard(hexTile, Vertex, player):
+class catanBoard(hexTile, Vertex):
     'Class Definition for Catan Board '
     #Object Creation - creates a random board configuration with hexTiles
     #Takes
     def __init__(self):
-        self.hexTileList = [] #List to store all hextiles
+        self.hexTileDict = {} #Dict to store all hextiles, with hexIndex as key
         self.vertexList = [] #List to store the Vertices coordinates
-        self.boardGraph = [] #List to store the vertex objects
+        self.boardGraph = {} #Dict to store the vertex objects with the pixelCoordinates as keys
         self.resourcesList = self.getRandomResourceList()
         self.edgeLength = 80 #Specify for hex size
 
@@ -32,7 +32,7 @@ class catanBoard(hexTile, Vertex, player):
 
         self.screen = pygame.display.set_mode(self.size)
         pygame.display.set_caption('Catan')
-        self.font_resource = pygame.font.Font(pygame.font.get_default_font(), 15)
+        self.font_resource = pygame.font.SysFont('cambria', 15)
 
         #Get a random permutation of indices 0-18 to use with the resource list
         randomIndices = np.random.permutation([i for i in range(len(self.resourcesList))])
@@ -47,7 +47,7 @@ class catanBoard(hexTile, Vertex, player):
 
             #Create the new hexTile with index and append + increment index
             newHexTile = hexTile(hexIndex_i, self.resourcesList[rand_i], hexCoords)
-            self.hexTileList.append(newHexTile)
+            self.hexTileDict[hexIndex_i] = newHexTile
             hexIndex_i += 1
 
         #Create the vertex graph
@@ -84,7 +84,7 @@ class catanBoard(hexTile, Vertex, player):
 
     #Function to generate the entire board graph
     def generateVertexGraph(self):
-        for hexTile in self.hexTileList:
+        for hexTile in self.hexTileDict.values():
             hexTileCorners = polygon_corners(self.flat, hexTile.hex) #Get vertices of each hex
             #Create vertex graph with this list of corners
             self.updateVertexGraph(hexTileCorners, hexTile.index)
@@ -98,50 +98,51 @@ class catanBoard(hexTile, Vertex, player):
         for v in vertexCoordList:
             #Check if vertex already exists - update adjacentHexList if it does
             if v in self.vertexList:
-                for existingVertex in self.boardGraph:
-                    if(existingVertex.pixelCoordinates == v):
-                        existingVertex.adjacentHexList.append(hexIndx)
+                for existingVertex in self.boardGraph.keys():
+                    if(existingVertex == v):
+                        self.boardGraph[v].adjacentHexList.append(hexIndx)
 
             else:#Create new vertex if it doesn't exist
                 #print('Adding Vertex:', v)
                 newVertex = Vertex(v, hexIndx)
                 self.vertexList.append(v)
-                self.boardGraph.append(newVertex)
+                self.boardGraph[v] = newVertex
 
     
     #Function to add adges to graph given all vertices
     def updateGraphEdges(self):
-        for v1 in self.boardGraph:
-            for v2 in self.boardGraph:
+        for v1 in self.boardGraph.keys():
+            for v2 in self.boardGraph.keys():
                 if(self.vertexDistance(v1, v2) == self.edgeLength):
-                    v1.edgeList.append(v2)
+                    self.boardGraph[v1].edgeList.append(v2)
 
 
     @staticmethod
     def vertexDistance(v1, v2):
-        dist = ((v1.pixelCoordinates.x - v2.pixelCoordinates.x)**2 + (v1.pixelCoordinates.y - v2.pixelCoordinates.y)**2)**0.5
+        dist = ((v1.x - v2.x)**2 + (v1.y - v2.y)**2)**0.5
         return round(dist)
 
 
     def printGraph(self):
         print(len(self.boardGraph))
-        for node in self.boardGraph:
-            print(node.pixelCoordinates, len(node.edgeList), node.adjacentHexList)
+        for node in self.boardGraph.keys():
+            print(node, len(self.boardGraph[node].edgeList), self.boardGraph[node].adjacentHexList)
             
     #Function to Display Catan Board Info
     def displayBoardInfo(self):
-        for tile in self.hexTileList:
+        for tile in self.hexTileList.values():
             tile.displayHexInfo()
         return None
 
 
-    #Function to display the board
-    def displayBoard(self):
+    #Function to display the initial board
+    def displayInitialBoard(self):
         #Dictionary to store RGB Color values
         colorDict_RGB = {"BRICK":(255,51,51), "ORE":(128, 128, 128), "WHEAT":(255,255,51), "WOOD":(0,153,0), "SHEEP":(51,255,51), "DESERT":(255,255,204)}
+        pygame.draw.rect(self.screen, pygame.Color('royalblue2'), (0,0,self.width,self.height)) #blue background
 
         #Render each hexTile
-        for hexTile in self.hexTileList:
+        for hexTile in self.hexTileDict.values():
             hexTileCorners = polygon_corners(self.flat, hexTile.hex)
 
             hexTileColor_rgb = colorDict_RGB[hexTile.resource.type]
@@ -162,9 +163,69 @@ class catanBoard(hexTile, Vertex, player):
         return None
 
 
-    #Function to display a road on the board
+    #Function to draw a road on the board
     def draw_road(self, edgeToDraw, roadColor):
-        pygame.draw.line(self.screen, pygame.Color(roadColor), edgeToDraw[0], edgeToDraw[1], 15)
+        pygame.draw.line(self.screen, pygame.Color(roadColor), edgeToDraw[0], edgeToDraw[1], 12)
+
+    #Function to draw a road on the board
+    def draw_possible_road(self, edgeToDraw, roadColor):
+        pygame.draw.line(self.screen, pygame.Color(roadColor), edgeToDraw[0], edgeToDraw[1], 2)
+
+    #Function to draw a settlement on the board at vertexToDraw
+    def draw_settlement(self, vertexToDraw, color):
+        newSettlement = pygame.Rect(vertexToDraw[0]-10, vertexToDraw[1]-10, 25, 25)
+        pygame.draw.rect(self.screen, pygame.Color(color), newSettlement)
 
 
+    #Function to get available settlements for colonisation for a particular player
+    def get_settleable_vertices(self, player):
+        return None
 
+    #Function to get the list of potential roads a player can build.
+    #Return these roads as tuples of vertex pairs
+    def get_potential_roads(self, player):
+        colonisableRoads = []
+        #Check potential roads from each road the player already has
+        for existingRoad in player.buildGraph['ROADS']:
+            for vertex_i in existingRoad: #Iterate over both vertices of this road
+                #Check neighbors from this vertex
+                for indx, v_i in enumerate(self.boardGraph[vertex_i].edgeList):
+                    if(self.boardGraph[vertex_i].edgeState[indx] == False): #Edge currently does not have a road
+                        colonisableRoads.append((vertex_i, v_i))
+        
+        for road in colonisableRoads:    
+            self.draw_possible_road(road, player.color)
+        return colonisableRoads
+    
+    #Function to update boardGraph with Road by player
+    def updateBoardGraph_road(self, v_coord1, v_coord2, player):
+        #Update edge from first vertxex v1
+        for indx, v in enumerate(self.boardGraph[v_coord1].edgeList):
+            if(v == v_coord2):
+                self.boardGraph[v_coord1].edgeState[indx] = True
+        
+        #Update edge from second vertxex v2
+        for indx, v in enumerate(self.boardGraph[v_coord2].edgeList):
+            if(v == v_coord1):
+                self.boardGraph[v_coord2].edgeState[indx] = True
+        
+        self.draw_road([v_coord1, v_coord2], player.color) #Draw the settlement
+
+
+    #Function to update boardGraph with settlement on vertex v
+    def updateBoardGraph_settlement(self, v_coord, player):
+        self.boardGraph[v_coord].state['Player'] = player 
+        self.boardGraph[v_coord].state['Settlement'] = True
+        self.boardGraph[v_coord].isColonised = True 
+
+        self.draw_settlement(v_coord, player.color) #Draw the settlement
+
+
+    #Function to get a hexTile with a particular number
+    def getHexResourceRolled(self, diceRollNum):
+        hexesRolled = [] #Empty list to store the hex index rolled (min 1, max 2)
+        for hexTile in self.hexTileDict.values():
+            if hexTile.resource.num == diceRollNum:
+                hexesRolled.append(hexTile.index)
+
+        return hexesRolled
