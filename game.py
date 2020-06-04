@@ -109,16 +109,28 @@ class catanGame():
 
         #Loop through and display all existing buildings from players build graphs
         for player_i in list(self.playerQueue.queue): #Build Settlements and roads of each player
+            for existingRoad in player_i.buildGraph['ROADS']:
+                self.board.draw_road(existingRoad, player_i.color)
+            
             for settlementCoord in player_i.buildGraph['SETTLEMENTS']:
                 self.board.draw_settlement(settlementCoord, player_i.color)
 
-            for existingRoad in player_i.buildGraph['ROADS']:
-                self.board.draw_road(existingRoad, player_i.color)
-            #TO-DO: Add loop for players cities
-
+            for cityCoord in player_i.buildGraph['CITIES']:
+                self.board.draw_city(cityCoord, player_i.color)
+        
         if(gameScreenState == 'ROAD'): #Show screen with potential roads
-            potential_road_list_rect, potential_road_list = self.board.get_potential_roads(player)
-            return potential_road_list_rect, potential_road_list
+            potential_road_dict = self.board.get_potential_roads(player)
+            return potential_road_dict
+
+        if(gameScreenState == 'SETTLE'): #Show screen with potential settlements
+            potentialVertexDict = self.board.get_potential_settlements(player)
+            return potentialVertexDict
+
+        if(gameScreenState == 'CITY'): 
+            potentialVertexDict = self.board.get_potential_cities(player)
+            return potentialVertexDict
+
+        #TO-DO Add screens for robber and trades
 
 
     #Function to roll dice 
@@ -150,8 +162,60 @@ class catanGame():
                         player_i.resources[resourceGenerated] += 1
                         print("Player {} collects resource: {}".format(player_i.name, resourceGenerated))
 
-            print(player_i.name, player_i.resources)
+            print("Player: {}, Resources: {}, Points: {}".format(player_i.name, player_i.resources, player_i.victoryPoints))
+            print(player_i.buildGraph['SETTLEMENTS'], player_i.roadsLeft)
         return None
+
+    #Function to control build-road action with display
+    def buildRoad_display(self, currentPlayer):
+        #Get all spots the player can build a road and display thin lines
+        roadsPossibleDict = self.displayGameScreen('ROAD', currentPlayer) 
+        pygame.display.update()
+
+        mouseClicked = False #Get player actions until a mouse is clicked - whether a road is built or not
+
+        while(mouseClicked == False):
+            for e in pygame.event.get(): 
+                if(e.type == pygame.MOUSEBUTTONDOWN): #Exit this loop on mouseclick
+                    for road, roadRect in roadsPossibleDict.items():
+                        if(roadRect.collidepoint(e.pos)): 
+                            currentPlayer.build_road(road[0], road[1], self.board)
+                    
+                    mouseClicked = True
+
+    #Function to control build-setttlment action with display
+    def buildSettlement_display(self, currentPlayer):
+        #Get all spots the player can build a road and display thin lines
+        verticesPossibleDict = self.displayGameScreen('SETTLE', currentPlayer) 
+        pygame.display.update()
+
+        mouseClicked = False #Get player actions until a mouse is clicked - whether a road is built or not
+
+        while(mouseClicked == False):
+            for e in pygame.event.get(): 
+                if(e.type == pygame.MOUSEBUTTONDOWN): #Exit this loop on mouseclick
+                    for vertex, vertexRect in verticesPossibleDict.items():
+                        if(vertexRect.collidepoint(e.pos)): 
+                            currentPlayer.build_settlement(vertex, self.board)
+                    
+                    mouseClicked = True
+
+    #Function to control the build-city action with display
+    def buildCity_display(self, currentPlayer):
+        #Get all spots the player can build a road and display thin lines
+        verticesPossibleDict = self.displayGameScreen('CITY', currentPlayer) 
+        pygame.display.update()
+
+        mouseClicked = False #Get player actions until a mouse is clicked - whether a road is built or not
+
+        while(mouseClicked == False):
+            for e in pygame.event.get(): 
+                if(e.type == pygame.MOUSEBUTTONDOWN): #Exit this loop on mouseclick
+                    for vertex, vertexRect in verticesPossibleDict.items():
+                        if(vertexRect.collidepoint(e.pos)): 
+                            currentPlayer.build_city(vertex, self.board)
+                    
+                    mouseClicked = True
 
 
     #Function that runs the main game loop with all players and pieces
@@ -189,34 +253,24 @@ class catanGame():
                             if(self.buildRoad_button.collidepoint(e.pos)):
                                 #Code to check if road is legal and build
                                 if(diceRolled == True): #Can only build after rolling dice
-
-                                        #Get all spots the player can build a road and display thin lines
-                                        roadsPossibleRect, roadsPossible = self.displayGameScreen('ROAD', currPlayer) 
-                                        pygame.display.update()
-
-                                        roadBuilt = False
-
-                                        while(roadBuilt == False):
-                                            for e in pygame.event.get(): #Get player actions
-                                                if(e.type == pygame.MOUSEBUTTONDOWN):
-                                                    for i, rp in enumerate(roadsPossibleRect):
-                                                        if(rp.collidepoint(e.pos)): 
-                                                            currPlayer.build_road(roadsPossible[i][0], roadsPossible[i][1], self.board)
-                                                            roadBuilt = True
-
-
-                                        # v1 = Point(x=580.0, y=400.0)
-                                        # v2 = Point(x=540.0, y=330.72)
-                                        # currPlayer.build_road(v1, v2, self.board)
-
-                                        self.displayGameScreen(None, None)
+                                    self.buildRoad_display(currPlayer)
+                                    self.displayGameScreen(None, None)#Update back to original gamescreen
 
 
                         #Check if player wants to build settlement
                         if(e.type == pygame.MOUSEBUTTONDOWN):
                             if(self.buildSettlement_button.collidepoint(e.pos)):
                                 if(diceRolled == True): #Can only build settlement rolling dice
-                                    print("Building settlement")
+                                    self.buildSettlement_display(currPlayer)
+                                    self.displayGameScreen(None, None)#Update back to original gamescreen
+
+                        #Check if player wants to build city
+                        if(e.type == pygame.MOUSEBUTTONDOWN):
+                            if(self.buildCity_button.collidepoint(e.pos)):
+                                if(diceRolled == True): #Can only build settlement rolling dice
+                                    self.buildCity_display(currPlayer)
+                                    self.displayGameScreen(None, None)#Update back to original gamescreen
+
 
                         #Check if player wants to end turn
                         if(e.type == pygame.MOUSEBUTTONDOWN):

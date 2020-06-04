@@ -13,12 +13,11 @@ class player():
         self.name = playerName
         self.color = playerColor
         self.victoryPoints = 0
-        self.visibleVictoryPoints = 0
 
         self.settlementsLeft = 5
         self.roadsLeft = 15
         self.citiesLeft = 4
-        self.resources = {'ORE':0, 'BRICK':5, 'WHEAT':2, 'WOOD':5, 'SHEEP':2} #Dictionary that keeps track of resource amounts
+        self.resources = {'ORE':15, 'BRICK':20, 'WHEAT':20, 'WOOD':20, 'SHEEP':10} #Dictionary that keeps track of resource amounts
 
         self.knightsPlayed = 0
 
@@ -29,38 +28,12 @@ class player():
         self.buildGraph = {'ROADS':[], 'SETTLEMENTS':[], 'CITIES':[]} 
 
         self.devCards = None #Dev cards in possession
+        #self.visibleVictoryPoints = self.victoryPoints - devCard victory points
+
 
     #function to update player resources based on dice roll
     def update_resources(self, diceRoll):
         'Update resource amount of players'
-
-
-    #function to build a settlement on vertex with coordinates vCoord
-    def build_settlement(self, vCoord, board):
-        'Update player buildGraph and boardgraph to add a settlement on vertex v'
-        #Take input from Player on where to build settlement
-        #Check if valid location (Does this player have a road leading upto settlement)
-            #Check if player has correct resources
-                #Update player resources and boardGraph with transaction
-
-        if(self.resources['BRICK'] > 0 and self.resources['WOOD'] > 0 and self.resources['SHEEP'] > 0 and self.resources['WHEAT'] > 0): #Check if player has resources available
-            if(self.settlementsLeft > 0): #Check if player has settlements left
-                self.buildGraph['SETTLEMENTS'].append(vCoord)
-                self.settlementsLeft -= 1
-
-                #Update player resources
-                self.resources['BRICK'] -= 1
-                self.resources['WOOD'] -= 1
-                self.resources['SHEEP'] -= 1
-                self.resources['WHEAT'] -= 1
-
-                board.updateBoardGraph_settlement(vCoord, self)
-
-        else:
-            print("Insufficient Resources to Build Settlement. Build Cost: 1 BRICK, 1 WOOD, 1 WHEAT, 1 SHEEP")
-
-    #Function to get a list of available vertices for settlements
-
 
     #function to build a road from vertex v1 to vertex v2
     def build_road(self, v1, v2, board):
@@ -75,15 +48,61 @@ class player():
                 self.resources['BRICK'] -= 1
                 self.resources['WOOD'] -= 1
 
-                board.updateBoardGraph_road(v1, v2, self)
-                print('Player {} Successfully Built a road'.format(self.name))
+                board.updateBoardGraph_road(v1, v2, self) #update the overall boardGraph
+                print('Player {} Successfully Built a Road'.format(self.name))
+
+                #TO-DO: Calculate current road length
 
         else:
             print("Insufficient Resources to Build Road - Need 1 BRICK, 1 WOOD")
 
+
+    #function to build a settlement on vertex with coordinates vCoord
+    def build_settlement(self, vCoord, board):
+        'Update player buildGraph and boardgraph to add a settlement on vertex v'
+        #Take input from Player on where to build settlement
+            #Check if player has correct resources
+                #Update player resources and boardGraph with transaction
+
+        if(self.resources['BRICK'] > 0 and self.resources['WOOD'] > 0 and self.resources['SHEEP'] > 0 and self.resources['WHEAT'] > 0): #Check if player has resources available
+            if(self.settlementsLeft > 0): #Check if player has settlements left
+                self.buildGraph['SETTLEMENTS'].append(vCoord)
+                self.settlementsLeft -= 1
+
+                #Update player resources
+                self.resources['BRICK'] -= 1
+                self.resources['WOOD'] -= 1
+                self.resources['SHEEP'] -= 1
+                self.resources['WHEAT'] -= 1
+                
+                self.victoryPoints += 1
+                board.updateBoardGraph_settlement(vCoord, self) #update the overall boardGraph
+                print('Player {} Successfully Built a Settlement'.format(self.name))
+
+                
+
+        else:
+            print("Insufficient Resources to Build Settlement. Build Cost: 1 BRICK, 1 WOOD, 1 WHEAT, 1 SHEEP")
+
     #function to build a city on vertex v
-    def build_city(self, v):
+    def build_city(self, vCoord, board):
         'Upgrade existing settlement to city in buildGraph'
+        if(self.resources['WHEAT'] >= 2 and self.resources['ORE'] > 3): #Check if player has resources available
+            if(self.citiesLeft > 0):
+                self.buildGraph['CITIES'].append(vCoord)
+                self.settlementsLeft += 1 #Increase number of settlements and decrease number of cities
+                self.citiesLeft -=1
+
+                #Update player resources
+                self.resources['ORE'] -= 3
+                self.resources['WHEAT'] -= 2
+                self.victoryPoints += 1
+
+                board.updateBoardGraph_city(vCoord, self) #update the overall boardGraph
+                print('Player {} Successfully Built a City'.format(self.name))
+
+        else:
+            print("Insufficient Resources to Build City. Build Cost: 3 ORE, 2 WHEAT")
     
     #function to end turn
     def end_turn():

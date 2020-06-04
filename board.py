@@ -170,39 +170,87 @@ class catanBoard(hexTile, Vertex):
     def draw_road(self, edgeToDraw, roadColor):
         pygame.draw.line(self.screen, pygame.Color(roadColor), edgeToDraw[0], edgeToDraw[1], 10)
 
-    #Function to draw a road on the board
+    #Function to draw a potential road on the board - thin
     def draw_possible_road(self, edgeToDraw, roadColor):
-        roadRect = pygame.draw.line(self.screen, pygame.Color(roadColor), edgeToDraw[0], edgeToDraw[1], 3)
+        roadRect = pygame.draw.line(self.screen, pygame.Color(roadColor), edgeToDraw[0], edgeToDraw[1], 5)
         return roadRect
 
     #Function to draw a settlement on the board at vertexToDraw
     def draw_settlement(self, vertexToDraw, color):
-        newSettlement = pygame.Rect(vertexToDraw[0]-10, vertexToDraw[1]-10, 25, 25)
+        newSettlement = pygame.Rect(vertexToDraw.x-10, vertexToDraw.y-10, 25, 25)
         pygame.draw.rect(self.screen, pygame.Color(color), newSettlement)
 
+    #Function to draw a potential settlement on the board - thin
+    def draw_possible_settlement(self, vertexToDraw, color):
+        possibleSettlement = pygame.draw.circle(self.screen, pygame.Color(color), (int(vertexToDraw.x), int(vertexToDraw.y)), 20, 3)
+        return possibleSettlement
 
-    #Function to get available settlements for colonisation for a particular player
-    def get_settleable_vertices(self, player):
-        return None
+    
+    #Function to draw a settlement on the board at vertexToDraw
+    def draw_city(self, vertexToDraw, color):
+        pygame.draw.circle(self.screen, pygame.Color(color), (int(vertexToDraw.x), int(vertexToDraw.y)), 24)
+
+    #Function to draw a potential settlement on the board - thin
+    def draw_possible_city(self, vertexToDraw, color):
+        possibleCity = pygame.draw.circle(self.screen, pygame.Color(color), (int(vertexToDraw.x), int(vertexToDraw.y)), 25, 5)
+        return possibleCity
+
+
+
+
 
     #Function to get the list of potential roads a player can build.
-    #Return these roads as tuples of vertex pairs
+    #Return these roads as a dictionary where key=vertex coordinates and values is the rect
     def get_potential_roads(self, player):
-        colonisableRoads = []
-        colonisableRoadRects = []
+        colonisableRoads = {}
         #Check potential roads from each road the player already has
         for existingRoad in player.buildGraph['ROADS']:
             for vertex_i in existingRoad: #Iterate over both vertices of this road
                 #Check neighbors from this vertex
                 for indx, v_i in enumerate(self.boardGraph[vertex_i].edgeList):
                     if(self.boardGraph[vertex_i].edgeState[indx] == False): #Edge currently does not have a road
-                        colonisableRoads.append((vertex_i, v_i))
-        
-        for road in colonisableRoads:    
-            roadRect = self.draw_possible_road(road, player.color)
-            colonisableRoadRects.append(roadRect)
+                        if((v_i, vertex_i) not in colonisableRoads.keys()): #If the edge isn't already there in its opposite orientation
+                            #Add road and its rect
+                            colonisableRoads[(vertex_i, v_i)] = self.draw_possible_road((vertex_i, v_i), player.color)
+
+        return colonisableRoads
+
     
-        return colonisableRoadRects, colonisableRoads
+    #Function to get available settlements for colonisation for a particular player
+    #Return these settlements as a dict of vertices with their Rects
+    def get_potential_settlements(self, player):
+        colonisableVertices = {}
+        #Check starting from each road the player already has
+        for existingRoad in player.buildGraph['ROADS']:
+            for vertex_i in existingRoad: #Iterate over both vertices of this road
+                #Check if vertex isn't already in the potential settlements - to remove double checks
+                if(vertex_i not in colonisableVertices.keys()):
+                    if(self.boardGraph[vertex_i].isColonised): #Check if this vertex is already colonised
+                        break
+                    
+                    canColonise = True
+                    for v_neighbor in self.boardGraph[vertex_i].edgeList: #Check each of the neighbors from this vertex
+                        if(self.boardGraph[v_neighbor].isColonised):
+                            canColonise = False
+                            break
+                    
+                #If all checks are good add this vertex and its rect as the value
+                if(canColonise):
+                    colonisableVertices[vertex_i] = self.draw_possible_settlement(vertex_i, player.color)
+
+        return colonisableVertices
+
+
+    #Function to get available cities for colonisation for a particular player
+    #Return these settlements as a list of vertices
+    def get_potential_cities(self, player):
+        colonisableVertices = {}
+        #Check starting from each settlement the player already has
+        for existingSettlement in player.buildGraph['SETTLEMENTS']:
+            colonisableVertices[existingSettlement] = self.draw_possible_city(existingSettlement, player.color)
+
+        return colonisableVertices
+
     
     #Function to update boardGraph with Road by player
     def updateBoardGraph_road(self, v_coord1, v_coord2, player):
@@ -215,7 +263,7 @@ class catanBoard(hexTile, Vertex):
         for indx, v in enumerate(self.boardGraph[v_coord2].edgeList):
             if(v == v_coord1):
                 self.boardGraph[v_coord2].edgeState[indx] = True
-        
+
         #self.draw_road([v_coord1, v_coord2], player.color) #Draw the settlement
 
 
@@ -226,6 +274,12 @@ class catanBoard(hexTile, Vertex):
         self.boardGraph[v_coord].isColonised = True 
 
         #self.draw_settlement(v_coord, player.color) #Draw the settlement
+    
+    #Function to update boardGraph with settlement on vertex v
+    def updateBoardGraph_city(self, v_coord, player):
+        self.boardGraph[v_coord].state['Player'] = player 
+        self.boardGraph[v_coord].state['Settlement'] = False
+        self.boardGraph[v_coord].state['City'] = True
 
 
     #Function to get a hexTile with a particular number
