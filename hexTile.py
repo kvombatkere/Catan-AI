@@ -21,6 +21,7 @@ class hexTile():
         self.pixelCenter = None #Pixel coordinates of hex as Point(x, y)
         self.index = hexIndex
         self.neighborList = neighborList
+        self.robber = False
 
     #Function to update hex neighbors
     def updateNeighbors(self):  

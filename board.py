@@ -39,7 +39,8 @@ class catanBoard(hexTile, Vertex):
         
         hexIndex_i = 0 #initialize hexIndex at 0
         #Neighbors are specified in adjacency matrix - hard coded
-
+        
+        print("Initializing Game Board...")
         #Generate the hexes and the graphs with the Index, Centers and Resources defined
         for rand_i in randomIndices:
             #Get the coordinates of the new hex, indexed by hexIndex_i
@@ -47,6 +48,9 @@ class catanBoard(hexTile, Vertex):
 
             #Create the new hexTile with index and append + increment index
             newHexTile = hexTile(hexIndex_i, self.resourcesList[rand_i], hexCoords)
+            if(newHexTile.resource.type == 'DESERT'): #Initialize robber on Desert
+                newHexTile.robber = True
+
             self.hexTileDict[hexIndex_i] = newHexTile
             hexIndex_i += 1
 
@@ -156,15 +160,7 @@ class catanBoard(hexTile, Vertex):
 
         pygame.display.update()
 
-        #startTime = pygame.time.get_ticks()
-        #runTime = 0
-        #runTime = pygame.time.get_ticks() - startTime
-
         return None
-
-    #Function to display the main catanBoard
-    #def displayMainBoard(self):
-
 
     #Function to draw a road on the board
     def draw_road(self, edgeToDraw, roadColor):
@@ -194,9 +190,6 @@ class catanBoard(hexTile, Vertex):
     def draw_possible_city(self, vertexToDraw, color):
         possibleCity = pygame.draw.circle(self.screen, pygame.Color(color), (int(vertexToDraw.x), int(vertexToDraw.y)), 25, 5)
         return possibleCity
-
-
-
 
 
     #Function to get the list of potential roads a player can build.
@@ -242,7 +235,7 @@ class catanBoard(hexTile, Vertex):
 
 
     #Function to get available cities for colonisation for a particular player
-    #Return these settlements as a list of vertices
+    #Return these cities as a dict of vertex-vertexRect key value pairs
     def get_potential_cities(self, player):
         colonisableVertices = {}
         #Check starting from each settlement the player already has
@@ -250,6 +243,39 @@ class catanBoard(hexTile, Vertex):
             colonisableVertices[existingSettlement] = self.draw_possible_city(existingSettlement, player.color)
 
         return colonisableVertices
+
+    #Special function to get potential first settlements during setup phase
+    def get_setup_settlements(self, player):
+        colonisableVertices = {}
+        #Check every vertex and every neighbor of that vertex, amd if both are open then we can build a settlement there
+        for vertexCoord in self.boardGraph.keys():
+            canColonise = True
+            potentialVertex = self.boardGraph[vertexCoord]
+            if(potentialVertex.isColonised):  #First check if vertex is colonised
+                canColonise = False
+            
+            #Check each neighbor
+            for v_neighbor in potentialVertex.edgeList:
+                if(self.boardGraph[v_neighbor].isColonised):  #Check if any of first neighbors are colonised
+                    canColonise = False
+                    break
+
+            if(canColonise): #If the vertex is colonisable add it to the dict with its Rect
+                colonisableVertices[vertexCoord] = self.draw_possible_settlement(vertexCoord, player.color)
+
+        return colonisableVertices
+
+
+    #Special function to get potential first roads during setup phase
+    def get_setup_roads(self, player):
+        colonisableRoads = {}
+        #Can only build roads next to the latest existing player settlement
+        latestSettlementCoords = player.buildGraph['SETTLEMENTS'][-1]
+        for v_neighbor in self.boardGraph[latestSettlementCoords].edgeList:
+            possibleRoad = (latestSettlementCoords, v_neighbor)
+            colonisableRoads[possibleRoad] = self.draw_possible_road(possibleRoad, player.color)
+        
+        return colonisableRoads
 
     
     #Function to update boardGraph with Road by player
@@ -280,6 +306,32 @@ class catanBoard(hexTile, Vertex):
         self.boardGraph[v_coord].state['Player'] = player 
         self.boardGraph[v_coord].state['Settlement'] = False
         self.boardGraph[v_coord].state['City'] = True
+
+        #Remove settlement from player's buildGraph
+        player.buildGraph['SETTLEMENTS'].remove(v_coord)
+
+    #Function to update boardGraph with Robber on hexTile
+    def updateBoardGraph_robber(self, hexIndex):
+        #Set all flags to false
+        for hex_tile in self.hexTileDict.values():
+            hex_tile.robber = False
+
+        self.hexTileDict[hexIndex].robber = True
+
+    #Function to get possible robber hexTiles
+    #Return robber hex spots with their hexIndex - rect representations as key-value pairs
+    def get_robber_spots(self):
+        robberHexDict = {}
+        for indx, hex_tile in self.hexTileDict.items():
+            if(hex_tile.robber == False):
+                robberHexDict[indx] = self.draw_possible_robber(hex_tile.pixelCenter)
+
+        return robberHexDict
+
+    #Function to draw the possible spots for a robber
+    def draw_possible_robber(self, vertexToDraw):
+        possibleRobber = pygame.draw.circle(self.screen, pygame.Color('black'), (int(vertexToDraw.x), int(vertexToDraw.y)), 40, 5)
+        return possibleRobber
 
 
     #Function to get a hexTile with a particular number

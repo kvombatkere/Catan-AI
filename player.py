@@ -31,10 +31,6 @@ class player():
         #self.visibleVictoryPoints = self.victoryPoints - devCard victory points
 
 
-    #function to update player resources based on dice roll
-    def update_resources(self, diceRoll):
-        'Update resource amount of players'
-
     #function to build a road from vertex v1 to vertex v2
     def build_road(self, v1, v2, board):
         'Update buildGraph to add a road on edge v1 - v2'
@@ -104,6 +100,13 @@ class player():
         else:
             print("Insufficient Resources to Build City. Build Cost: 3 ORE, 2 WHEAT")
     
+    #function to move robber to a specific hex
+    def move_robber(self, hexIndex, board):
+        'Update boardGraph with Robber'
+        board.updateBoardGraph_robber(hexIndex)
+        
+        #TO-DO: Implement stealing of a random resource from other players
+        
     #function to end turn
     def end_turn():
         'Pass turn to next player and update game state'
