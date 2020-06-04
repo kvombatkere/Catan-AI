@@ -1,5 +1,5 @@
 #Karan Vombatkere
-#May 2020
+#Summer 2020
 
 #Imports
 from board import *
@@ -17,7 +17,7 @@ class player():
         self.settlementsLeft = 5
         self.roadsLeft = 15
         self.citiesLeft = 4
-        self.resources = {'ORE':15, 'BRICK':20, 'WHEAT':20, 'WOOD':20, 'SHEEP':10} #Dictionary that keeps track of resource amounts
+        self.resources = {'ORE':12, 'BRICK':20, 'WHEAT':20, 'WOOD':20, 'SHEEP':10} #Dictionary that keeps track of resource amounts
 
         self.knightsPlayed = 0
 

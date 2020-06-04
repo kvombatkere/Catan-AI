@@ -1,5 +1,5 @@
 #Karan Vombatkere
-#May 2020
+#Summer 2020
 
 #Imports
 # 
@@ -219,6 +219,8 @@ class catanGame():
             self.moveRobber_display(currentPlayer)
             self.displayGameScreen(None, None)#Update back to original gamescreen
 
+            #TO-DO: Add stealing functionality for robber
+
     #Function to control build-road action with display
     def buildRoad_display(self, currentPlayer):
         #Get all spots the player can build a road and display thin lines
@@ -328,7 +330,6 @@ class catanGame():
                 print("---------------------------------------------------------------------------")
                 print("Current Player:", currPlayer.name)
 
-
                 turnOver = False #boolean to keep track of turn
                 diceRolled = False  #Boolean for dice roll status
                 while(turnOver == False):
@@ -392,7 +393,6 @@ class catanGame():
                         break
                     
                 
-            
         
 
 #Initialize new game and run

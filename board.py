@@ -1,5 +1,5 @@
 #Karan Vombatkere
-#May 2020
+#Summer 2020
 
 #Imports
 from string import *
@@ -330,7 +330,7 @@ class catanBoard(hexTile, Vertex):
 
     #Function to draw the possible spots for a robber
     def draw_possible_robber(self, vertexToDraw):
-        possibleRobber = pygame.draw.circle(self.screen, pygame.Color('black'), (int(vertexToDraw.x), int(vertexToDraw.y)), 40, 5)
+        possibleRobber = pygame.draw.circle(self.screen, pygame.Color('black'), (int(vertexToDraw.x), int(vertexToDraw.y)), 50, 5)
         return possibleRobber
 
 

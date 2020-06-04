@@ -1,5 +1,5 @@
 #Karan Vombatkere
-#May 2020
+#Summer 2020
 
 #Adapted from
 #Generated code -- CC0 -- No Rights Reserved -- http://www.redblobgames.com/grids/hexagons/
