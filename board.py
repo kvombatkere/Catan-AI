@@ -333,6 +333,27 @@ class catanBoard(hexTile, Vertex):
         possibleRobber = pygame.draw.circle(self.screen, pygame.Color('black'), (int(vertexToDraw.x), int(vertexToDraw.y)), 50, 5)
         return possibleRobber
 
+    #Get a Dict of players to rob based on the hexIndex of the robber, with the circle Rect as the value
+    def get_players_to_rob(self, hexIndex):
+        #Extract all 6 vertices of this hexTile
+        hexTile = self.hexTileDict[hexIndex]
+        vertexList = polygon_corners(self.flat, hexTile.hex)
+
+        playersToRobDict = {}
+
+        for vertex in vertexList:
+            if(self.boardGraph[vertex].state['Player'] != None): #There is a settlement on this vertex
+                playerToRob = self.boardGraph[vertex].state['Player']
+                if(playerToRob not in playersToRobDict.keys()): #only add a player once with his/her first settlement/city
+                    playersToRobDict[playerToRob] = self.draw_possible_players_to_rob(vertex)
+
+        return playersToRobDict
+
+    #Function to draw possible players to rob
+    def draw_possible_players_to_rob(self, vertexCoord):
+        possiblePlayer = pygame.draw.circle(self.screen, pygame.Color('black'), (int(vertexCoord.x), int(vertexCoord.y)), 35, 5)
+        return possiblePlayer
+
 
     #Function to get a hexTile with a particular number
     def getHexResourceRolled(self, diceRollNum):

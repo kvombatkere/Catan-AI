@@ -3,6 +3,7 @@
 
 #Imports
 from board import *
+import numpy as np
 
 #Class definition for a player
 class player():
@@ -17,7 +18,7 @@ class player():
         self.settlementsLeft = 5
         self.roadsLeft = 15
         self.citiesLeft = 4
-        self.resources = {'ORE':12, 'BRICK':20, 'WHEAT':20, 'WOOD':20, 'SHEEP':10} #Dictionary that keeps track of resource amounts
+        self.resources = {'ORE':6, 'BRICK':6, 'WHEAT':6, 'WOOD':6, 'SHEEP':4} #Dictionary that keeps track of resource amounts
 
         self.knightsPlayed = 0
 
@@ -100,12 +101,35 @@ class player():
         else:
             print("Insufficient Resources to Build City. Build Cost: 3 ORE, 2 WHEAT")
     
-    #function to move robber to a specific hex
-    def move_robber(self, hexIndex, board):
+    #function to move robber to a specific hex and steal from a player
+    def move_robber(self, hexIndex, board, player_robbed):
         'Update boardGraph with Robber'
         board.updateBoardGraph_robber(hexIndex)
         
-        #TO-DO: Implement stealing of a random resource from other players
+        #Steal a random resource from other players
+        self.steal_resource(player_robbed)
+
+
+    #Function to steal a random resource from player_2
+    def steal_resource(self, player_2):
+        if(player_2 == None):
+            print("No Player on this hex to Rob")
+            return
+        
+        #Get all resources player 2 has in a list and use random list index to steal
+        p2_resources = []
+        for resourceName, resourceAmount in player_2.resources.items():
+            p2_resources += [resourceName]*resourceAmount
+
+        resourceIndexToSteal = np.random.randint(0, len(p2_resources))
+        resourceStolen = p2_resources[resourceIndexToSteal]
+        
+        #Update resources of both players
+        player_2.resources[resourceStolen] -= 1
+        self.resources[resourceStolen] += 1
+        print("Stole 1 {} from Player {}".format(resourceStolen, player_2.name))
+        
+
         
     #function to end turn
     def end_turn():

@@ -170,6 +170,10 @@ class catanGame():
             print("Move Robber")
             return potentialRobberDict
 
+        if(gameScreenState == 'ROB_PLAYER'):
+            potentialPlayersDict = self.board.get_players_to_rob(player) #Note here player is actually hexIndex
+            return potentialPlayersDict
+
         #TO-DO Add screens for trades
 
 
@@ -306,10 +310,32 @@ class catanGame():
                 if(e.type == pygame.MOUSEBUTTONDOWN): #Exit this loop on mouseclick
                     for hexIndex, robberCircleRect in possibleRobberDict.items():
                         if(robberCircleRect.collidepoint(e.pos)): 
-                            currentPlayer.move_robber(hexIndex, self.board) #Player moved robber to this hex
-                    
-                    mouseClicked = True
+                            #Add code to choose which player to rob depending on hex clicked on
+                            playerToRob = self.choosePlayerToRob_display(hexIndex)
 
+                            #Move robber to that hex and rob
+                            currentPlayer.move_robber(hexIndex, self.board, playerToRob) #Player moved robber to this hex
+                            mouseClicked = True #Only exit out once a correct robber spot is chosen
+
+    
+    #Function to control the choice of player to rob with display
+    #Returns the choice of player to rob
+    def choosePlayerToRob_display(self, hexIndex):
+        #Get all spots the player can move robber to and show circles
+        possiblePlayerDict = self.displayGameScreen('ROB_PLAYER', hexIndex)
+        pygame.display.update()
+
+        #If dictionary is empty return None
+        if(possiblePlayerDict == {}):
+            return None
+
+        mouseClicked = False #Get player actions until a mouse is clicked - whether a road is built or not
+        while(mouseClicked == False):
+            for e in pygame.event.get(): 
+                if(e.type == pygame.MOUSEBUTTONDOWN): #Exit this loop on mouseclick
+                    for playerToRob, playerCircleRect in possiblePlayerDict.items():
+                        if(playerCircleRect.collidepoint(e.pos)): 
+                            return playerToRob
 
     #Function that runs the main game loop with all players and pieces
     def playCatan(self):
