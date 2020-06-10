@@ -97,24 +97,29 @@ class catanGame():
         buildSettleText = self.font_button.render("SETTLE", False, (0,0,0))
         buildCityText = self.font_button.render("CITY", False, (0,0,0))
         endTurnText = self.font_button.render("END TURN", False, (0,0,0))
+        devCardText = self.font_button.render("DEV CARD", False, (0,0,0))
 
         self.rollDice_button = pygame.Rect(20, 20, 80, 40)
         self.buildRoad_button = pygame.Rect(20, 70, 80, 40)
         self.buildSettlement_button = pygame.Rect(20, 120, 80, 40)
         self.buildCity_button = pygame.Rect(20, 170, 80, 40)
-        self.endTurn_button = pygame.Rect(20, 220, 80, 40)
+        self.devCard_button = pygame.Rect(20, 220, 80, 40)
+        self.endTurn_button = pygame.Rect(20, 320, 80, 40)
 
         pygame.draw.rect(self.board.screen, pygame.Color('darkgreen'), self.rollDice_button) 
         pygame.draw.rect(self.board.screen, pygame.Color('gray33'), self.buildRoad_button) 
         pygame.draw.rect(self.board.screen, pygame.Color('gray33'), self.buildSettlement_button) 
-        pygame.draw.rect(self.board.screen, pygame.Color('gray33'), self.buildCity_button) 
+        pygame.draw.rect(self.board.screen, pygame.Color('gray33'), self.buildCity_button)
+        pygame.draw.rect(self.board.screen, pygame.Color('gray33'), self.devCard_button) 
         pygame.draw.rect(self.board.screen, pygame.Color('burlywood'), self.endTurn_button) 
 
         self.board.screen.blit(diceRollText,(30, 30)) 
         self.board.screen.blit(buildRoadText,(30,80)) 
         self.board.screen.blit(buildSettleText,(30,130))
         self.board.screen.blit(buildCityText, (30,180))
-        self.board.screen.blit(endTurnText,(30,230))
+        self.board.screen.blit(devCardText, (30,230))
+
+        self.board.screen.blit(endTurnText,(30,330))
 
     #Function to display robber
     def displayRobber(self):
@@ -217,7 +222,9 @@ class catanGame():
                             print("Player {} collects 2 {} from City".format(player_i.name, resourceGenerated))
 
                 print("Player:{}, Resources:{}, Points: {}".format(player_i.name, player_i.resources, player_i.victoryPoints))
-                print("RoadsLeft:{}, SettlementsLeft:{}, CitiesLeft:{}, MaxRoadLength: {}\n".format(player_i.roadsLeft, player_i.settlementsLeft, player_i.citiesLeft,player_i.maxRoadLength))
+                print('Dev Cards:{}'.format(player_i.devCards))
+                #print("RoadsLeft:{}, SettlementsLeft:{}, CitiesLeft:{}".format(player_i.roadsLeft, player_i.settlementsLeft, player_i.citiesLeft))
+                print('MaxRoadLength:{}, LongestRoad:{}\n'.format(player_i.maxRoadLength, player_i.longestRoadFlag))
         
         else:
             self.moveRobber_display(currentPlayer)
@@ -337,6 +344,52 @@ class catanGame():
                         if(playerCircleRect.collidepoint(e.pos)): 
                             return playerToRob
 
+    #function to check if a player has the longest road - after building latest road
+    def check_longest_road(self, player_i):
+        if(player_i.maxRoadLength >= 5): #Only eligible if road length is at least 5
+            longestRoad = True
+            for p in list(self.playerQueue.queue):
+                if(p.maxRoadLength >= player_i.maxRoadLength and p != player_i): #Check if any other players have a longer road
+                    longestRoad = False
+            
+            if(longestRoad and player_i.longestRoadFlag == False): #if player_i takes longest road and didn't already have longest road
+                #Set previous players flag to false and give player_i the longest road points
+                prevPlayer = ''
+                for p in list(self.playerQueue.queue):
+                    if(p.longestRoadFlag):
+                        p.longestRoadFlag = False
+                        p.victoryPoints -= 2
+                        prevPlayer = 'from Player ' + p.name
+    
+                player_i.longestRoadFlag = True
+                player_i.victoryPoints += 2
+
+                print("Player {} takes Longest Road {}".format(player_i.name, prevPlayer))
+
+    #function to check if a player has the largest army - after playing latest knight
+    def check_largest_army(self, player_i):
+        if(player_i.knightsPlayed >= 3): #Only eligible if at least 3 knights are player
+            largestArmy = True
+            for p in list(self.playerQueue.queue):
+                if(p.knightsPlayed >= player_i.knightsPlayed and p != player_i): #Check if any other players have more knights played
+                    largestArmy = False
+            
+            if(largestArmy and player_i.largestArmyFlag == False): #if player_i takes largest army and didn't already have it
+                #Set previous players flag to false and give player_i the largest points
+                prevPlayer = ''
+                for p in list(self.playerQueue.queue):
+                    if(p.largestArmyFlag):
+                        p.largestArmyFlag = False
+                        p.victoryPoints -= 2
+                        prevPlayer = 'from Player ' + p.name
+    
+                player_i.largestArmyFlag = True
+                player_i.victoryPoints += 2
+
+                print("Player {} takes Largest Army {}".format(player_i.name, prevPlayer))
+
+
+
     #Function that runs the main game loop with all players and pieces
     def playCatan(self):
         #self.board.displayBoard() #Display updated board
@@ -358,6 +411,9 @@ class catanGame():
 
                 turnOver = False #boolean to keep track of turn
                 diceRolled = False  #Boolean for dice roll status
+                #Update Player's dev card stack with dev cards drawn in previous turn
+                currPlayer.updateDevCards()
+
                 while(turnOver == False):
 
                     for e in pygame.event.get(): #Get player actions/in-game events
@@ -367,6 +423,7 @@ class catanGame():
 
                         #Check mouse click in rollDice
                         if(e.type == pygame.MOUSEBUTTONDOWN):
+                            #Check if player rolled the dice
                             if(self.rollDice_button.collidepoint(e.pos)):
                                 if(diceRolled == False): #Only roll dice once
                                     diceNum = self.rollDice()
@@ -375,31 +432,43 @@ class catanGame():
                                     #Code to update player resources with diceNum
                                     self.update_playerResources(diceNum, currPlayer)
 
-                        #Check if player wants to build road
-                        if(e.type == pygame.MOUSEBUTTONDOWN):
+                            #Check if player wants to build road
                             if(self.buildRoad_button.collidepoint(e.pos)):
                                 #Code to check if road is legal and build
                                 if(diceRolled == True): #Can only build after rolling dice
                                     self.buildRoad_display(currPlayer)
                                     self.displayGameScreen(None, None)#Update back to original gamescreen
 
+                                    #Check if player gets longest road and update Victory points
+                                    self.check_longest_road(currPlayer)
+                                    #Show updated points and resources  
+                                    print("Player:{}, Resources:{}, Points: {}".format(currPlayer.name, currPlayer.resources, currPlayer.victoryPoints))
 
-                        #Check if player wants to build settlement
-                        if(e.type == pygame.MOUSEBUTTONDOWN):
+                            #Check if player wants to build settlement
                             if(self.buildSettlement_button.collidepoint(e.pos)):
-                                if(diceRolled == True): #Can only build settlement rolling dice
+                                if(diceRolled == True): #Can only build settlement after rolling dice
                                     self.buildSettlement_display(currPlayer)
                                     self.displayGameScreen(None, None)#Update back to original gamescreen
+                                    #Show updated points and resources  
+                                    print("Player:{}, Resources:{}, Points: {}".format(currPlayer.name, currPlayer.resources, currPlayer.victoryPoints))
 
-                        #Check if player wants to build city
-                        if(e.type == pygame.MOUSEBUTTONDOWN):
+                            #Check if player wants to build city
                             if(self.buildCity_button.collidepoint(e.pos)):
-                                if(diceRolled == True): #Can only build settlement rolling dice
+                                if(diceRolled == True): #Can only build city after rolling dice
                                     self.buildCity_display(currPlayer)
                                     self.displayGameScreen(None, None)#Update back to original gamescreen
+                                    #Show updated points and resources  
+                                    print("Player:{}, Resources:{}, Points: {}".format(currPlayer.name, currPlayer.resources, currPlayer.victoryPoints))
 
-                        #Check if player wants to end turn
-                        if(e.type == pygame.MOUSEBUTTONDOWN):
+                            #Check if player wants to draw a development card
+                            if(self.devCard_button.collidepoint(e.pos)):
+                                if(diceRolled == True): #Can only draw devCard after rolling dice
+                                    currPlayer.draw_devCard(self.board)
+                                    #Show updated points and resources  
+                                    print("Player:{}, Resources:{}, Points: {}".format(currPlayer.name, currPlayer.resources, currPlayer.victoryPoints))
+                                    print('Available Dev Cards:', currPlayer.devCards)
+
+                            #Check if player wants to end turn
                             if(self.endTurn_button.collidepoint(e.pos)):
                                 if(diceRolled == True): #Can only end turn after rolling dice
                                     print("Ending Turn!")
@@ -408,7 +477,8 @@ class catanGame():
                         #Update the display
                         #self.displayGameScreen(None, None)
                         pygame.display.update()
-
+                    
+                    
                     #Check if game is over
                     if currPlayer.victoryPoints >= self.maxPoints:
                         self.gameOver = True
@@ -419,7 +489,6 @@ class catanGame():
                         break
                     
                 
-        
 
 #Initialize new game and run
 newGame = catanGame()

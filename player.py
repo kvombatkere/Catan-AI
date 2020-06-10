@@ -15,13 +15,16 @@ class player():
         self.color = playerColor
         self.victoryPoints = 0
 
-        self.maxRoadLength = 0
         self.settlementsLeft = 5
         self.roadsLeft = 15
         self.citiesLeft = 4
-        self.resources = {'ORE':6, 'BRICK':20, 'WHEAT':10, 'WOOD':20, 'SHEEP':10} #Dictionary that keeps track of resource amounts
+        self.resources = {'ORE':10, 'BRICK':20, 'WHEAT':10, 'WOOD':20, 'SHEEP':10} #Dictionary that keeps track of resource amounts
 
         self.knightsPlayed = 0
+        self.largestArmyFlag = False
+        
+        self.maxRoadLength = 0
+        self.longestRoadFlag = False
 
         #Undirected Graph to keep track of which vertices and edges player has colonised
         #Every time a player's build graph is updated the gameBoardGraph must also be updated
@@ -29,7 +32,9 @@ class player():
         #Each of the 3 lists store vertex information - Roads are stores with tuples of vertex pairs
         self.buildGraph = {'ROADS':[], 'SETTLEMENTS':[], 'CITIES':[]} 
 
-        self.devCards = None #Dev cards in possession
+        #Dev cards in possession
+        self.newDevCards = [] #List to keep the new dev cards draw - update the main list every turn
+        self.devCards = {'KNIGHT':0, 'VP':0, 'MONOPOLY':0, 'ROADBUILDER':0, 'YEAROFPLENTY':0} 
         #self.visibleVictoryPoints = self.victoryPoints - devCard victory points
 
 
@@ -52,7 +57,7 @@ class player():
                 maxRoads = self.get_road_length(board)
                 self.maxRoadLength = maxRoads
 
-                print('Player {} Successfully Built a Road. MaxRoadLength: {}'.format(self.name, self.maxRoadLength))
+                print('Player {} Built a Road. MaxRoadLength: {}'.format(self.name, self.maxRoadLength))
 
         else:
             print("Insufficient Resources to Build Road - Need 1 BRICK, 1 WOOD")
@@ -78,8 +83,8 @@ class player():
                 
                 self.victoryPoints += 1
                 board.updateBoardGraph_settlement(vCoord, self) #update the overall boardGraph
-                print('Player {} Successfully Built a Settlement'.format(self.name))
-
+                print('Player {} Built a Settlement'.format(self.name))
+  
         else:
             print("Insufficient Resources to Build Settlement. Build Cost: 1 BRICK, 1 WOOD, 1 WHEAT, 1 SHEEP")
 
@@ -98,7 +103,7 @@ class player():
                 self.victoryPoints += 1
 
                 board.updateBoardGraph_city(vCoord, self) #update the overall boardGraph
-                print('Player {} Successfully Built a City'.format(self.name))
+                print('Player {} Built a City'.format(self.name))
 
         else:
             print("Insufficient Resources to Build City. Build Cost: 3 ORE, 2 WHEAT")
@@ -124,6 +129,9 @@ class player():
             p2_resources += [resourceName]*resourceAmount
 
         resourceIndexToSteal = np.random.randint(0, len(p2_resources))
+
+        #Get a random permutation and steal a card
+        p2_resources = np.random.permutation(p2_resources)
         resourceStolen = p2_resources[resourceIndexToSteal]
         
         #Update resources of both players
@@ -215,12 +223,68 @@ class player():
         'Pass turn to next player and update game state'
 
     #function to draw a Development Card
-    def draw_devCard(self):
+    def draw_devCard(self, board):
         'Draw a random dev card from stack and update self.devcards'
+        if(self.resources['WHEAT'] >= 1 and self.resources['ORE'] >= 1 and self.resources['SHEEP'] >= 1): #Check if player has resources available
+            #Get alldev cards available
+            devCardsToDraw = []
+            for cardName, cardAmount in board.devCardStack.items():
+                devCardsToDraw += [cardName]*cardAmount
+
+            #IF there are no devCards left
+            if(devCardsToDraw == []):
+                print("No Dev Cards Left!")
+                return
+
+            devCardIndex = np.random.randint(0, len(devCardsToDraw))
+
+            #Get a random permutation and draw a card
+            devCardsToDraw = np.random.permutation(devCardsToDraw)
+            cardDrawn = devCardsToDraw[devCardIndex]
+
+            #Update player resources
+            self.resources['ORE'] -= 1
+            self.resources['WHEAT'] -= 1
+            self.resources['SHEEP'] -= 1
+
+            #If card is a victory point apply immediately, else add to new card list
+            if(cardDrawn == 'VP'):
+                self.victoryPoints += 1
+                board.devCardStack[cardDrawn] -= 1
+                self.devCards[cardDrawn] += 1
+            
+            else:#Update player dev card and the stack
+                self.newDevCards.append(cardDrawn)
+                board.devCardStack[cardDrawn] -= 1
+            
+            print("Player {} drew a {} from Development Card Stack".format(self.name, cardDrawn))
+
+        else:
+            print("Insufficient Resources for Dev Card. Cost: 1 ORE, 1 WHEAT, 1 SHEEP")
+
+    #Function to update dev card stack with dev cards drawn from prior turn
+    def updateDevCards(self):
+        for newCard in self.newDevCards:
+            self.devCards[newCard] += 1
+
+        #Reset the new card list to blank
+        self.newDevCards = []
 
     #function to play a development card
-    def play_devCard():
+    def play_devCard(self):
         'Update game state'
+        #Get a list of all the unique dev cards this player can play
+        devCardsAvailable = []
+        for cardName, cardAmount in self.devCards.items():
+            if(cardAmount >= 1):
+                devCardsAvailable.append((cardName, cardAmount))
+
+        if(devCardsAvailable == []):
+            print("No Development Cards available to play")
+            return
+
+        print("Development Cards Available to Play:", devCardsAvailable)
+
 
     #function to initate a trade - with bank or other players
     def initiate_trade():

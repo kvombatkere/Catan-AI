@@ -57,6 +57,9 @@ class catanBoard(hexTile, Vertex):
         #Create the vertex graph
         self.generateVertexGraph()
 
+        #Initialize DevCardStack
+        self.devCardStack = {'KNIGHT':15, 'VP':5, 'MONOPOLY':2, 'ROADBUILDER':2, 'YEAROFPLENTY':2}
+
         return None
 
     def getHexCoords(self, hexInd):
