@@ -15,10 +15,11 @@ class player():
         self.color = playerColor
         self.victoryPoints = 0
 
+        self.maxRoadLength = 0
         self.settlementsLeft = 5
         self.roadsLeft = 15
         self.citiesLeft = 4
-        self.resources = {'ORE':6, 'BRICK':6, 'WHEAT':6, 'WOOD':6, 'SHEEP':4} #Dictionary that keeps track of resource amounts
+        self.resources = {'ORE':6, 'BRICK':16, 'WHEAT':6, 'WOOD':16, 'SHEEP':4} #Dictionary that keeps track of resource amounts
 
         self.knightsPlayed = 0
 
@@ -46,9 +47,12 @@ class player():
                 self.resources['WOOD'] -= 1
 
                 board.updateBoardGraph_road(v1, v2, self) #update the overall boardGraph
-                print('Player {} Successfully Built a Road'.format(self.name))
 
-                #TO-DO: Calculate current road length
+                #Calculate current max road length and update
+                maxRoads = self.get_road_length(board)
+                self.maxRoadLength = maxRoads
+
+                print('Player {} Successfully Built a Road. MaxRoadLength: {}'.format(self.name, self.maxRoadLength))
 
         else:
             print("Insufficient Resources to Build Road - Need 1 BRICK, 1 WOOD")
@@ -84,7 +88,7 @@ class player():
     #function to build a city on vertex v
     def build_city(self, vCoord, board):
         'Upgrade existing settlement to city in buildGraph'
-        if(self.resources['WHEAT'] >= 2 and self.resources['ORE'] > 3): #Check if player has resources available
+        if(self.resources['WHEAT'] >= 2 and self.resources['ORE'] >= 3): #Check if player has resources available
             if(self.citiesLeft > 0):
                 self.buildGraph['CITIES'].append(vCoord)
                 self.settlementsLeft += 1 #Increase number of settlements and decrease number of cities
@@ -129,6 +133,89 @@ class player():
         self.resources[resourceStolen] += 1
         print("Stole 1 {} from Player {}".format(resourceStolen, player_2.name))
         
+    #Function to calculate road length for longest road calculation
+    #Use both player buildgraph and board graph to compute recursively
+    def get_road_length(self, board):
+        roadLengths = [] #List to store road lengths from each starting edge
+        for road in self.buildGraph['ROADS']: #check for every starting edge
+            self.road_i_lengths = [] #List to keep track of all lengths of roads resulting from this root road
+            roadCount = 0
+            roadArr = []
+            vertexList = []
+            #print("Start road:", road)
+           
+            self.check_path_length(road, roadArr, roadCount, vertexList, board.boardGraph)
+
+            road_inverted = (road[1], road[0])
+            roadCount = 0
+            roadArr = []
+            vertexList = []
+            self.check_path_length(road_inverted, roadArr, roadCount, vertexList, board.boardGraph)
+                
+            roadLengths.append(max(self.road_i_lengths)) #Update roadLength with max starting from this road
+            #print(self.road_i_lengths)
+
+        #print("Road Lengths:", roadLengths, max(roadLengths))
+        return max(roadLengths)
+
+    #Function to checl the path length from a current edge to all possible other vertices not yet visited by t
+    def check_path_length(self, edge, edgeList, roadLength, vertexList, boardGraph):
+        if(edge not in edgeList and (edge[1], edge[0]) not in edgeList):
+            #Append current edge to list and increment road count
+            edgeList.append(edge) #Append both orientations of the road
+            roadLength += 1
+            vertexList.append(edge[0])
+            
+            #Get new neighboring forward edges from this edge - not visited by the search yet
+            road_neighbors_list = self.get_neighboring_roads(edge, boardGraph, edgeList, vertexList)
+            
+            #print(neighboringRoads)
+            #if no neighboring roads exist append the roadLength upto this edge
+            if(road_neighbors_list == []):
+                #print("No new neighbors found")
+                self.road_i_lengths.append(roadLength)
+                return
+
+            else:
+                #check paths from left and right neighbors separately
+                for neighbor_road in road_neighbors_list:
+                    #print("checking neighboring edge:", neighbor_road)
+                    return self.check_path_length(neighbor_road, edgeList, roadLength, vertexList, boardGraph)
+        else:
+            print('loop detected')
+            self.road_i_lengths.append(roadLength)
+            return
+
+
+
+    #Helper function to get neighboring edges from this road that haven't already been explored
+    #We want forward neighbors only
+    def get_neighboring_roads(self, road_i, boardGraph, visitedRoads, visitedVertices):
+        #print("Getting neighboring roads for current road:", road_i)
+        newNeighbors = []
+        #Use v1 and v2 to get the vertices to expand from
+        v1 = road_i[0]
+        v2 = road_i[1] 
+        for edge in self.buildGraph['ROADS']:
+            if(edge[1] in visitedVertices):
+                edge = (edge[1], edge[0]) #flip the edge if the orientation is reversed
+
+            if(edge not in visitedRoads): #If it is a new distinct edge
+                if(boardGraph[v2].state['Player'] in [self, None]):#Add condition for vertex to be not colonised by anyone else
+                    if(edge[0] == v2 and v2 not in visitedVertices):  #If v2 has neighbors, defined starting or finishing at v2
+                        #print("Appending NEW neighbor:", edge)
+                        newNeighbors.append(edge)
+
+                    if(edge[0] == v1 and v1 not in visitedVertices):
+                        newNeighbors.append(edge)
+
+                    if(edge[1] == v2 and v2 not in visitedVertices): #If v1 has neighbors, defined starting or finishing at v2
+                        newNeighbors.append((edge[1], edge[0]))
+
+                    if(edge[1] == v1 and v1 not in visitedVertices):
+                        newNeighbors.append((edge[1], edge[0]))
+
+        return newNeighbors
 
         
     #function to end turn

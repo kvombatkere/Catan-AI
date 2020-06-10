@@ -202,9 +202,10 @@ class catanBoard(hexTile, Vertex):
                 #Check neighbors from this vertex
                 for indx, v_i in enumerate(self.boardGraph[vertex_i].edgeList):
                     if(self.boardGraph[vertex_i].edgeState[indx] == False): #Edge currently does not have a road
-                        if((v_i, vertex_i) not in colonisableRoads.keys()): #If the edge isn't already there in its opposite orientation
+                        if((v_i, vertex_i) not in colonisableRoads.keys() and (vertex_i, v_i) not in colonisableRoads.keys()): #If the edge isn't already there in both its regular + opposite orientation
                             #Add road and its rect
                             colonisableRoads[(vertex_i, v_i)] = self.draw_possible_road((vertex_i, v_i), player.color)
+                            #print(vertex_i, v_i)
 
         return colonisableRoads
 
@@ -280,12 +281,12 @@ class catanBoard(hexTile, Vertex):
     
     #Function to update boardGraph with Road by player
     def updateBoardGraph_road(self, v_coord1, v_coord2, player):
-        #Update edge from first vertxex v1
+        #Update edge from first vertex v1
         for indx, v in enumerate(self.boardGraph[v_coord1].edgeList):
             if(v == v_coord2):
                 self.boardGraph[v_coord1].edgeState[indx] = True
         
-        #Update edge from second vertxex v2
+        #Update edge from second vertex v2
         for indx, v in enumerate(self.boardGraph[v_coord2].edgeList):
             if(v == v_coord1):
                 self.boardGraph[v_coord2].edgeState[indx] = True

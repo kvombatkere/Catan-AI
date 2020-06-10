@@ -217,7 +217,7 @@ class catanGame():
                             print("Player {} collects 2 {} from City".format(player_i.name, resourceGenerated))
 
                 print("Player:{}, Resources:{}, Points: {}".format(player_i.name, player_i.resources, player_i.victoryPoints))
-                print("RoadsLeft:{}, SettlementsLeft:{}, CitiesLeft:{}\n".format(player_i.roadsLeft, player_i.settlementsLeft, player_i.citiesLeft))
+                print("RoadsLeft:{}, SettlementsLeft:{}, CitiesLeft:{}, MaxRoadLength: {}\n".format(player_i.roadsLeft, player_i.settlementsLeft, player_i.citiesLeft,player_i.maxRoadLength))
         
         else:
             self.moveRobber_display(currentPlayer)
