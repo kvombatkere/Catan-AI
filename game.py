@@ -222,7 +222,7 @@ class catanGame():
                             print("Player {} collects 2 {} from City".format(player_i.name, resourceGenerated))
 
                 print("Player:{}, Resources:{}, Points: {}".format(player_i.name, player_i.resources, player_i.victoryPoints))
-                print('Dev Cards:{}'.format(player_i.devCards))
+                #print('Dev Cards:{}'.format(player_i.devCards))
                 #print("RoadsLeft:{}, SettlementsLeft:{}, CitiesLeft:{}".format(player_i.roadsLeft, player_i.settlementsLeft, player_i.citiesLeft))
                 print('MaxRoadLength:{}, LongestRoad:{}\n'.format(player_i.maxRoadLength, player_i.longestRoadFlag))
         

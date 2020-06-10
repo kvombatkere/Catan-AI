@@ -289,20 +289,3 @@ class player():
     #function to initate a trade - with bank or other players
     def initiate_trade():
         return None
-
-
-#Class Definition for Development card stack
-class devCardStack():
-    def __init__(self):
-        'Initialize the Dev Card Stack'
-        self.Knights = 15
-        self.VictoryPoints = 5
-        self.Monopoly = 2
-        self.RoadBuilding = 2
-        self.YearofPlenty = 2
-
-    #Function to take a card from the stack
-    def draw_Card():
-        'Give card to player and update the stack'
-
-    
