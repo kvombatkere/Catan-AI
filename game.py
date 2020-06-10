@@ -5,6 +5,7 @@
 # 
 from board import *
 from player import *
+from AIPlayer import *
 import queue
 import numpy as np
 import sys, pygame
@@ -42,6 +43,7 @@ class catanGame():
         #Functiont to go through initial set up
         self.build_initial_settlements()
 
+
         #Display initial board
         self.displayGameScreen(None, None)
     
@@ -53,10 +55,14 @@ class catanGame():
     def build_initial_settlements(self):
         #Initialize new players with names and colors
         playerColors = ['black', 'darkslateblue', 'magenta4', 'orange1']
-        for i in range(self.numPlayers):
+        for i in range(self.numPlayers - 1):
             playerNameInput = input("Enter Player {} name: ".format(i+1))
             newPlayer = player(playerNameInput, playerColors[i])
             self.playerQueue.put(newPlayer)
+
+        test_AI_player = AI_Player('Random-Greedy-AI', playerColors[i+1]) #Add the AI Player last
+        test_AI_player.updateAI()
+        self.playerQueue.put(test_AI_player)
 
         playerList = list(self.playerQueue.queue)
 
@@ -64,17 +70,28 @@ class catanGame():
 
         #Build Settlements and roads of each player forwards
         for player_i in playerList: 
-            self.buildSettlement_display(player_i)
-            self.displayGameScreen(None, None)
+            if(player_i.isAI):
+                player_i.initial_setup(self.board)
+            
+            else:
+                self.buildSettlement_display(player_i)
+                self.displayGameScreen(None, None)
 
-            self.buildRoad_display(player_i)
-            self.displayGameScreen(None, None)
+                self.buildRoad_display(player_i)
+                self.displayGameScreen(None, None)
 
         #Build Settlements and roads of each player reverse
         playerList.reverse()
         for player_i in playerList: 
-            self.buildSettlement_display(player_i)
-            self.displayGameScreen(None, None)
+            if(player_i.isAI):
+                player_i.initial_setup(self.board)
+
+            else:
+                self.buildSettlement_display(player_i)
+                self.displayGameScreen(None, None)
+
+                self.buildRoad_display(player_i)
+                self.displayGameScreen(None, None)
 
             #Initial resource generation
             #check each adjacent hex to latest settlement
@@ -83,9 +100,6 @@ class catanGame():
                 if(resourceGenerated != 'DESERT'):
                     player_i.resources[resourceGenerated] += 1
                     print("Player {} collects 1 {} from Settlement".format(player_i.name, resourceGenerated))
-
-            self.buildRoad_display(player_i)
-            self.displayGameScreen(None, None)
 
         self.gameSetup = False
 
@@ -98,28 +112,31 @@ class catanGame():
         buildCityText = self.font_button.render("CITY", False, (0,0,0))
         endTurnText = self.font_button.render("END TURN", False, (0,0,0))
         devCardText = self.font_button.render("DEV CARD", False, (0,0,0))
+        playDevCardText = self.font_button.render("PLAY DEV CARD", False, (0,0,0))
 
-        self.rollDice_button = pygame.Rect(20, 20, 80, 40)
+        self.rollDice_button = pygame.Rect(20, 10, 80, 40)
         self.buildRoad_button = pygame.Rect(20, 70, 80, 40)
         self.buildSettlement_button = pygame.Rect(20, 120, 80, 40)
         self.buildCity_button = pygame.Rect(20, 170, 80, 40)
         self.devCard_button = pygame.Rect(20, 220, 80, 40)
-        self.endTurn_button = pygame.Rect(20, 320, 80, 40)
+        self.playDevCard_button = pygame.Rect(20, 270, 80, 40)
+        self.endTurn_button = pygame.Rect(20, 330, 80, 40)
 
         pygame.draw.rect(self.board.screen, pygame.Color('darkgreen'), self.rollDice_button) 
         pygame.draw.rect(self.board.screen, pygame.Color('gray33'), self.buildRoad_button) 
         pygame.draw.rect(self.board.screen, pygame.Color('gray33'), self.buildSettlement_button) 
         pygame.draw.rect(self.board.screen, pygame.Color('gray33'), self.buildCity_button)
-        pygame.draw.rect(self.board.screen, pygame.Color('gray33'), self.devCard_button) 
+        pygame.draw.rect(self.board.screen, pygame.Color('gray33'), self.devCard_button)
+        pygame.draw.rect(self.board.screen, pygame.Color('gray33'), self.playDevCard_button) 
         pygame.draw.rect(self.board.screen, pygame.Color('burlywood'), self.endTurn_button) 
 
-        self.board.screen.blit(diceRollText,(30, 30)) 
+        self.board.screen.blit(diceRollText,(30, 20)) 
         self.board.screen.blit(buildRoadText,(30,80)) 
         self.board.screen.blit(buildSettleText,(30,130))
         self.board.screen.blit(buildCityText, (30,180))
         self.board.screen.blit(devCardText, (30,230))
-
-        self.board.screen.blit(endTurnText,(30,330))
+        self.board.screen.blit(playDevCardText, (30,280))
+        self.board.screen.blit(endTurnText,(30,340))
 
     #Function to display robber
     def displayRobber(self):
@@ -411,8 +428,12 @@ class catanGame():
 
                 turnOver = False #boolean to keep track of turn
                 diceRolled = False  #Boolean for dice roll status
-                #Update Player's dev card stack with dev cards drawn in previous turn
+                
+                #Update Player's dev card stack with dev cards drawn in previous turn and reset devCardPlayedThisTurn
                 currPlayer.updateDevCards()
+                currPlayer.devCardPlayedThisTurn = False
+
+                #TO-DO: Add logic for AI Player to move
 
                 while(turnOver == False):
 
@@ -467,6 +488,13 @@ class catanGame():
                                     #Show updated points and resources  
                                     print("Player:{}, Resources:{}, Points: {}".format(currPlayer.name, currPlayer.resources, currPlayer.victoryPoints))
                                     print('Available Dev Cards:', currPlayer.devCards)
+
+                            #Check if player wants to draw a development card - can play devCard whenever after rolling dice
+                            if(self.playDevCard_button.collidepoint(e.pos)):
+                                    currPlayer.play_devCard()
+                                    #Show updated points and resources  
+                                    #print("Player:{}, Resources:{}, Points: {}".format(currPlayer.name, currPlayer.resources, currPlayer.victoryPoints))
+                                    #print('Available Dev Cards:', currPlayer.devCards)
 
                             #Check if player wants to end turn
                             if(self.endTurn_button.collidepoint(e.pos)):

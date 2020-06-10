@@ -14,6 +14,7 @@ class player():
         self.name = playerName
         self.color = playerColor
         self.victoryPoints = 0
+        self.isAI = False
 
         self.settlementsLeft = 5
         self.roadsLeft = 15
@@ -35,6 +36,7 @@ class player():
         #Dev cards in possession
         self.newDevCards = [] #List to keep the new dev cards draw - update the main list every turn
         self.devCards = {'KNIGHT':0, 'VP':0, 'MONOPOLY':0, 'ROADBUILDER':0, 'YEAROFPLENTY':0} 
+        self.devCardPlayedThisTurn = False
         #self.visibleVictoryPoints = self.victoryPoints - devCard victory points
 
 
@@ -273,17 +275,40 @@ class player():
     #function to play a development card
     def play_devCard(self):
         'Update game state'
+        #Check if player can play a devCard this turn
+        if(self.devCardPlayedThisTurn):
+            print('Already played 1 Dev Card this turn!')
+            return
+
         #Get a list of all the unique dev cards this player can play
         devCardsAvailable = []
         for cardName, cardAmount in self.devCards.items():
-            if(cardAmount >= 1):
+            if(cardName != 'VP' and cardAmount >= 1): #Exclude Victory points
                 devCardsAvailable.append((cardName, cardAmount))
 
         if(devCardsAvailable == []):
             print("No Development Cards available to play")
             return
+        
+        #Use Keyboard control to play the Dev Card
+        devCard_dict = {}
+        for indx, card in enumerate(devCardsAvailable):
+            devCard_dict[indx] = card[0]
 
-        print("Development Cards Available to Play:", devCardsAvailable)
+        print("Development Cards Available to Play", devCard_dict)
+
+        devCardNumber = -1
+        while (devCardNumber not in devCard_dict.keys()):
+            devCardNumber = int(input("Enter Dev card number to play:"))
+
+        #Play the devCard and update player's dev cards
+        devCardPlayed = devCard_dict[devCardNumber]
+        self.devCardPlayedThisTurn = True
+
+        print("Playing Dev Card:", devCardPlayed)
+        self.devCards[devCardPlayed] -= 1
+
+        #TO-DO: Add functionality to play a devCard
 
 
     #function to initate a trade - with bank or other players
