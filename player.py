@@ -19,7 +19,7 @@ class player():
         self.settlementsLeft = 5
         self.roadsLeft = 15
         self.citiesLeft = 4
-        self.resources = {'ORE':6, 'BRICK':16, 'WHEAT':6, 'WOOD':16, 'SHEEP':4} #Dictionary that keeps track of resource amounts
+        self.resources = {'ORE':6, 'BRICK':20, 'WHEAT':10, 'WOOD':20, 'SHEEP':10} #Dictionary that keeps track of resource amounts
 
         self.knightsPlayed = 0
 
@@ -79,8 +79,6 @@ class player():
                 self.victoryPoints += 1
                 board.updateBoardGraph_settlement(vCoord, self) #update the overall boardGraph
                 print('Player {} Successfully Built a Settlement'.format(self.name))
-
-                
 
         else:
             print("Insufficient Resources to Build Settlement. Build Cost: 1 BRICK, 1 WOOD, 1 WHEAT, 1 SHEEP")
@@ -143,7 +141,6 @@ class player():
             roadArr = []
             vertexList = []
             #print("Start road:", road)
-           
             self.check_path_length(road, roadArr, roadCount, vertexList, board.boardGraph)
 
             road_inverted = (road[1], road[0])
@@ -160,31 +157,26 @@ class player():
 
     #Function to checl the path length from a current edge to all possible other vertices not yet visited by t
     def check_path_length(self, edge, edgeList, roadLength, vertexList, boardGraph):
-        if(edge not in edgeList and (edge[1], edge[0]) not in edgeList):
-            #Append current edge to list and increment road count
-            edgeList.append(edge) #Append both orientations of the road
-            roadLength += 1
-            vertexList.append(edge[0])
-            
-            #Get new neighboring forward edges from this edge - not visited by the search yet
-            road_neighbors_list = self.get_neighboring_roads(edge, boardGraph, edgeList, vertexList)
-            
-            #print(neighboringRoads)
-            #if no neighboring roads exist append the roadLength upto this edge
-            if(road_neighbors_list == []):
-                #print("No new neighbors found")
-                self.road_i_lengths.append(roadLength)
-                return
-
-            else:
-                #check paths from left and right neighbors separately
-                for neighbor_road in road_neighbors_list:
-                    #print("checking neighboring edge:", neighbor_road)
-                    return self.check_path_length(neighbor_road, edgeList, roadLength, vertexList, boardGraph)
-        else:
-            print('loop detected')
+        #Append current edge to list and increment road count
+        edgeList.append(edge) #Append the road
+        roadLength += 1
+        vertexList.append(edge[0]) #Append the firs vertex
+        
+        #Get new neighboring forward edges from this edge - not visited by the search yet
+        road_neighbors_list = self.get_neighboring_roads(edge, boardGraph, edgeList, vertexList)
+        
+        #print(neighboringRoads)
+        #if no neighboring roads exist append the roadLength upto this edge
+        if(road_neighbors_list == []):
+            #print("No new neighbors found")
             self.road_i_lengths.append(roadLength)
             return
+
+        else:
+            #check paths from left and right neighbors separately
+            for neighbor_road in road_neighbors_list:
+                #print("checking neighboring edge:", neighbor_road)
+                self.check_path_length(neighbor_road, edgeList, roadLength, vertexList, boardGraph)
 
 
 
@@ -202,17 +194,17 @@ class player():
 
             if(edge not in visitedRoads): #If it is a new distinct edge
                 if(boardGraph[v2].state['Player'] in [self, None]):#Add condition for vertex to be not colonised by anyone else
-                    if(edge[0] == v2 and v2 not in visitedVertices):  #If v2 has neighbors, defined starting or finishing at v2
+                    if(edge[0] == v2 and edge[0] not in visitedVertices):  #If v2 has neighbors, defined starting or finishing at v2
                         #print("Appending NEW neighbor:", edge)
                         newNeighbors.append(edge)
 
-                    if(edge[0] == v1 and v1 not in visitedVertices):
+                    if(edge[0] == v1 and edge[0] not in visitedVertices):
                         newNeighbors.append(edge)
 
-                    if(edge[1] == v2 and v2 not in visitedVertices): #If v1 has neighbors, defined starting or finishing at v2
+                    if(edge[1] == v2 and edge[1] not in visitedVertices): #If v1 has neighbors, defined starting or finishing at v2
                         newNeighbors.append((edge[1], edge[0]))
 
-                    if(edge[1] == v1 and v1 not in visitedVertices):
+                    if(edge[1] == v1 and edge[1] not in visitedVertices):
                         newNeighbors.append((edge[1], edge[0]))
 
         return newNeighbors
