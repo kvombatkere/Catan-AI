@@ -55,7 +55,7 @@ class catanGame():
     def build_initial_settlements(self):
         #Initialize new players with names and colors
         playerColors = ['black', 'darkslateblue', 'magenta4', 'orange1']
-        for i in range(self.numPlayers - 1):
+        for i in range(self.numPlayers -1):
             playerNameInput = input("Enter Player {} name: ".format(i+1))
             newPlayer = player(playerNameInput, playerColors[i])
             self.playerQueue.put(newPlayer)
@@ -79,7 +79,7 @@ class catanGame():
 
                 self.buildRoad_display(player_i)
                 self.displayGameScreen(None, None)
-
+        
         #Build Settlements and roads of each player reverse
         playerList.reverse()
         for player_i in playerList: 
@@ -442,7 +442,7 @@ class catanGame():
                         #Check if AI player gets longest road and update Victory points
                         self.check_longest_road(currPlayer)
                         print("Player:{}, Resources:{}, Points: {}".format(currPlayer.name, currPlayer.resources, currPlayer.victoryPoints))
-
+                        
                         self.displayGameScreen(None, None)#Update back to original gamescreen
                         turnOver = True
 
