@@ -88,7 +88,7 @@ class catanGame():
                     player_i.resources[resourceGenerated] += 1
                     #print("Player {} collects 1 {} from Settlement".format(player_i.name, resourceGenerated))
         
-        pygame.time.delay(30000)
+        #pygame.time.delay(30000)
         self.gameSetup = False
 
     #Function to render basic gameplay buttons
@@ -297,7 +297,7 @@ class catanGame():
                     print("Player:{}, Resources:{}, Points: {}".format(currPlayer.name, currPlayer.resources, currPlayer.victoryPoints))
                     
                     self.displayGameScreen()#Update back to original gamescreen
-                    pygame.time.delay(1000)
+                    #pygame.time.delay(1000)
                     turnOver = True
                     
                     #Check if game is over

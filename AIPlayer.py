@@ -13,7 +13,7 @@ class AI_Player(player):
     def updateAI(self): 
         self.isAI = True
         self.setupResources = [] #List to keep track of setup resources
-        #self.resources = {'ORE':5, 'BRICK':5, 'WHEAT':3, 'WOOD':5, 'SHEEP':3} #Dictionary that keeps track of resource amounts
+        self.resources = {'ORE':0, 'BRICK':4, 'WHEAT':2, 'WOOD':4, 'SHEEP':2} #Dictionary that keeps track of resource amounts
         print("Added new AI Player:", self.name)
 
 
@@ -36,10 +36,9 @@ class AI_Player(player):
                 if(resourceType not in resourcesAtVertex):
                     resourcesAtVertex.append(resourceType)
                 numValue = board.hexTileDict[adjacentHex].resource.num
-                #print(resourceType, numValue)
                 vertexNumValue += diceRoll_expectation[numValue] #Add to total value of this vertex
 
-            #Add basic heuristic for resource diversity
+            #basic heuristic for resource diversity
             vertexNumValue += len(resourcesAtVertex)*2
             for r in resourcesAtVertex:
                 if(r != 'DESERT' and r not in self.setupResources):
@@ -67,30 +66,50 @@ class AI_Player(player):
 
     
     def move(self, board):
-        print("AI Player making random moves...")
-        
-        #Build a few random roads, settlements and cities
-        for i in range(3):
-            possibleRoads = board.get_potential_roads(self)
-            randomEdge = np.random.randint(0, len(possibleRoads.keys()))
-            self.build_road(list(possibleRoads.keys())[randomEdge][0], list(possibleRoads.keys())[randomEdge][1], board)
-
-        #Build a settlement
+        print("AI Player {} playing...".format(self.name))
+        #Trade resources if there are excessive amounts of a particular resource
+        self.trade()
+        #Build a settlements, city and few roads
         possibleVertices = board.get_potential_settlements(self)
-        if(possibleVertices != {}):
+        if(possibleVertices != {} and (self.resources['BRICK'] > 0 and self.resources['WOOD'] > 0 and self.resources['SHEEP'] > 0 and self.resources['WHEAT'] > 0)):
             randomVertex = np.random.randint(0, len(possibleVertices.keys()))
             self.build_settlement(list(possibleVertices.keys())[randomVertex], board)
 
         #Build a City
         possibleVertices = board.get_potential_cities(self)
-        if(possibleVertices != {}):
+        if(possibleVertices != {} and (self.resources['WHEAT'] >= 2 and self.resources['ORE'] >= 3)):
             randomVertex = np.random.randint(0, len(possibleVertices.keys()))
             self.build_city(list(possibleVertices.keys())[randomVertex], board)
 
+        #Build a couple roads
+        for i in range(2):
+            if(self.resources['BRICK'] > 0 and self.resources['WOOD'] > 0):
+                possibleRoads = board.get_potential_roads(self)
+                randomEdge = np.random.randint(0, len(possibleRoads.keys()))
+                self.build_road(list(possibleRoads.keys())[randomEdge][0], list(possibleRoads.keys())[randomEdge][1], board)
+
         #Draw a Dev Card
-        self.draw_devCard(board)
+        #self.draw_devCard(board)
         
         return
+
+    #Wrapper function to control all trading
+    def trade(self):
+        for r1, r1_amount in self.resources.items():
+            if(r1_amount >= 6): #heuristic to trade if a player has more than 5 of a particular resource
+                for r2, r2_amount in self.resources.items():
+                    if(r2_amount < 1):
+                        self.trade_with_bank(r1, r2)
+                        break
+
+    #Function to basic trade 4:1 with bank
+    def trade_with_bank(self, r1, r2):
+        if(self.resources[r1] >= 4):
+            self.resources[r1] -= 4
+            self.resources[r2] += 1
+            print("Traded 4 {} for 1 {}".format(r1, r2))
+        else:
+            print("Insufficient resource {} to trade 4:1 with Bank".format(r1))
 
 
     #Function to find best action - based on gamestate
