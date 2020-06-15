@@ -204,7 +204,7 @@ class catanBoard(hexTile, Vertex):
             for vertex_i in existingRoad: #Iterate over both vertices of this road
                 #Check neighbors from this vertex
                 for indx, v_i in enumerate(self.boardGraph[vertex_i].edgeList):
-                    if(self.boardGraph[vertex_i].edgeState[indx] == False): #Edge currently does not have a road
+                    if((self.boardGraph[vertex_i].edgeState[indx] == False) and (self.boardGraph[vertex_i].state['Player'] in [None, player])): #Edge currently does not have a road and vertex isn't colonised by another player
                         if((v_i, vertex_i) not in colonisableRoads.keys() and (vertex_i, v_i) not in colonisableRoads.keys()): #If the edge isn't already there in both its regular + opposite orientation
                             #Add road and its rect
                             colonisableRoads[(vertex_i, v_i)] = self.draw_possible_road((vertex_i, v_i), player.color)

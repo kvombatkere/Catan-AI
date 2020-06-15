@@ -19,7 +19,7 @@ class player():
         self.settlementsLeft = 5
         self.roadsLeft = 15
         self.citiesLeft = 4
-        self.resources = {'ORE':10, 'BRICK':20, 'WHEAT':10, 'WOOD':20, 'SHEEP':10} #Dictionary that keeps track of resource amounts
+        self.resources = {'ORE':5, 'BRICK':6, 'WHEAT':3, 'WOOD':6, 'SHEEP':3} #Dictionary that keeps track of resource amounts
 
         self.knightsPlayed = 0
         self.largestArmyFlag = False

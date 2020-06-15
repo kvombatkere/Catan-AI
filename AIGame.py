@@ -9,6 +9,7 @@ from AIPlayer import *
 import queue
 import numpy as np
 import sys, pygame
+#import matplotlib.pyplot as plt
 
 #Test Code
 class catanGame():
@@ -21,6 +22,10 @@ class catanGame():
         self.gameOver = False
         self.maxPoints = 10
         self.numPlayers = 0
+
+        #Dictionary to keep track of dice statistics
+        self.diceStats = {2:0, 3:0, 4:0, 5:0, 6:0, 7:0, 8:0, 9:0, 10:0, 11:0, 12:0}
+        self.diceStats_list = []
 
         while(self.numPlayers not in [3,4]): #Only accept 3 and 4 player games
             try:
@@ -39,15 +44,20 @@ class catanGame():
         self.font_diceRoll = pygame.font.SysFont('cambria', 25) #dice font
         self.font_Robber = pygame.font.SysFont('arialblack', 50) #robber font
 
-
         #Functiont to go through initial set up
         self.build_initial_settlements()
 
         #Display initial board
         #self.displayGameScreen(None, None)
-    
         #Run functions to view board and vertex graph
         #self.board.printGraph()
+        self.playCatan()
+
+        #Plot diceStats histogram
+        # plt.hist(self.diceStats_list, bins = 11)
+        # plt.show()
+
+        return None
     
 
     #Function to initialize players + build initial settlements for players
@@ -264,12 +274,11 @@ class catanGame():
     #Function that runs the main game loop with all players and pieces
     def playCatan(self):
         #self.board.displayBoard() #Display updated board
-
+        numTurns = 0
         while (self.gameOver == False):
-
             #Loop for each player's turn -> iterate through the player queue
             for currPlayer in self.playerQueue.queue:
-
+                numTurns += 1
                 print("---------------------------------------------------------------------------")
                 print("Current Player:", currPlayer.name)
 
@@ -285,11 +294,13 @@ class catanGame():
                     #TO-DO: Add logic for AI Player to move
                     #TO-DO: Add option of AI Player playing a dev card prior to dice roll
                     
-                    #Roll Dice
+                    #Roll Dice and update player resources and dice stats
                     pygame.event.pump()
                     diceNum = self.rollDice()
                     diceRolled = True
                     self.update_playerResources(diceNum, currPlayer)
+                    self.diceStats[diceNum] += 1
+                    self.diceStats_list.append(diceNum)
 
                     currPlayer.move(self.board) #AI Player makes all its moves
                     #Check if AI player gets longest road and update Victory points
@@ -297,7 +308,7 @@ class catanGame():
                     print("Player:{}, Resources:{}, Points: {}".format(currPlayer.name, currPlayer.resources, currPlayer.victoryPoints))
                     
                     self.displayGameScreen()#Update back to original gamescreen
-                    #pygame.time.delay(1000)
+                    pygame.time.delay(300)
                     turnOver = True
                     
                     #Check if game is over
@@ -305,7 +316,8 @@ class catanGame():
                         self.gameOver = True
                         self.turnOver = True
                         print("====================================================")
-                        print("PLAYER {} WINS!".format(currPlayer.name))
+                        print("PLAYER {} WINS IN {} TURNS!".format(currPlayer.name, numTurns))
+                        print(self.diceStats)
                         print("Exiting game in 10 seconds...")
                         break
 
@@ -321,4 +333,3 @@ class catanGame():
 
 #Initialize new game and run
 newGame = catanGame()
-newGame.playCatan()
