@@ -19,7 +19,7 @@ class catanGame():
 
         #Game State variables
         self.gameOver = False
-        self.maxPoints = 8
+        self.maxPoints = 10
         self.numPlayers = 0
 
         while(self.numPlayers not in [3,4]): #Only accept 3 and 4 player games
@@ -42,7 +42,6 @@ class catanGame():
 
         #Functiont to go through initial set up
         self.build_initial_settlements()
-
 
         #Display initial board
         #self.displayGameScreen(None, None)
@@ -79,14 +78,17 @@ class catanGame():
             self.displayGameScreen()
             pygame.time.delay(1000)
             
+            print("Player {} starts with {} resources".format(player_i.name, len(player_i.setupResources)))
+
             #Initial resource generation
             #check each adjacent hex to latest settlement
             for adjacentHex in self.board.boardGraph[player_i.buildGraph['SETTLEMENTS'][-1]].adjacentHexList:
                 resourceGenerated = self.board.hexTileDict[adjacentHex].resource.type
                 if(resourceGenerated != 'DESERT'):
                     player_i.resources[resourceGenerated] += 1
-                    print("Player {} collects 1 {} from Settlement".format(player_i.name, resourceGenerated))
+                    #print("Player {} collects 1 {} from Settlement".format(player_i.name, resourceGenerated))
         
+        pygame.time.delay(30000)
         self.gameSetup = False
 
     #Function to render basic gameplay buttons
@@ -295,7 +297,7 @@ class catanGame():
                     print("Player:{}, Resources:{}, Points: {}".format(currPlayer.name, currPlayer.resources, currPlayer.victoryPoints))
                     
                     self.displayGameScreen()#Update back to original gamescreen
-                    pygame.time.delay(3000)
+                    pygame.time.delay(1000)
                     turnOver = True
                     
                     #Check if game is over
