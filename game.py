@@ -39,6 +39,8 @@ class catanGame():
         self.font_diceRoll = pygame.font.SysFont('cambria', 25) #dice font
         self.font_Robber = pygame.font.SysFont('arialblack', 50) #robber font
 
+        #Run functions to view board and vertex graph
+        self.board.printGraph()
 
         #Functiont to go through initial set up
         self.build_initial_settlements()
@@ -47,8 +49,7 @@ class catanGame():
         #Display initial board
         self.displayGameScreen(None, None)
     
-        #Run functions to view board and vertex graph
-        #self.board.printGraph()
+        
     
 
     #Function to initialize players + build initial settlements for players
@@ -99,7 +100,7 @@ class catanGame():
                 resourceGenerated = self.board.hexTileDict[adjacentHex].resource.type
                 if(resourceGenerated != 'DESERT'):
                     player_i.resources[resourceGenerated] += 1
-                    print("Player {} collects 1 {} from Settlement".format(player_i.name, resourceGenerated))
+                    print("{} collects 1 {} from Settlement".format(player_i.name, resourceGenerated))
 
         self.gameSetup = False
 

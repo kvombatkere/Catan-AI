@@ -46,13 +46,15 @@ class hexTile():
 #Class definition of a Vertex
 class Vertex():
     
-    def __init__(self, pixelCoord, adjHexIndex):
+    def __init__(self, pixelCoord, adjHexIndex, vIndex):
+        self.vertexIndex = vIndex #Index to store vertex info
         self.pixelCoordinates = pixelCoord
         self.edgeList = [] #List to store adjacent Vertices
         self.adjacentHexList = [adjHexIndex] #List to store indices of 3 adjacent hexes
         self.edgeState = [False, False, False] #List to determine if a road is built on edge
 
         self.state = {'Player': None, 'Settlement':False, 'City':False} #Vertex state 
+        self.port = False #Add the corresponding port (BRICK, SHEEP, WHEAT, WOOD, ORE, 3:1) later
         self.isColonised = False
 
         self.edgeLength = 80 #Specify for hex size

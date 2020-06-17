@@ -21,7 +21,7 @@ class catanBoard(hexTile, Vertex):
     #Takes
     def __init__(self):
         self.hexTileDict = {} #Dict to store all hextiles, with hexIndex as key
-        self.vertexList = [] #List to store the Vertices coordinates
+        self.vertex_index_to_pixel_dict = {} #Dict to store the Vertices coordinates with vertex indices as keys
         self.boardGraph = {} #Dict to store the vertex objects with the pixelCoordinates as keys
         self.resourcesList = self.getRandomResourceList()
         self.edgeLength = 80 #Specify for hex size
@@ -55,7 +55,10 @@ class catanBoard(hexTile, Vertex):
             hexIndex_i += 1
 
         #Create the vertex graph
+        self.vertexIndexCount = 0 #initialize vertex index count to 0
         self.generateVertexGraph()
+
+        self.updatePorts() #Add the ports to the graph
 
         #Initialize DevCardStack
         self.devCardStack = {'KNIGHT':15, 'VP':5, 'MONOPOLY':2, 'ROADBUILDER':2, 'YEAROFPLENTY':2}
@@ -104,16 +107,17 @@ class catanBoard(hexTile, Vertex):
     def updateVertexGraph(self, vertexCoordList, hexIndx):
         for v in vertexCoordList:
             #Check if vertex already exists - update adjacentHexList if it does
-            if v in self.vertexList:
+            if v in self.vertex_index_to_pixel_dict.values():
                 for existingVertex in self.boardGraph.keys():
                     if(existingVertex == v):
                         self.boardGraph[v].adjacentHexList.append(hexIndx)
 
             else:#Create new vertex if it doesn't exist
                 #print('Adding Vertex:', v)
-                newVertex = Vertex(v, hexIndx)
-                self.vertexList.append(v)
+                newVertex = Vertex(v, hexIndx, self.vertexIndexCount)
+                self.vertex_index_to_pixel_dict[self.vertexIndexCount] = v #Create the index-pixel key value pair
                 self.boardGraph[v] = newVertex
+                self.vertexIndexCount += 1 #Increment index for future
 
     
     #Function to add adges to graph given all vertices
@@ -129,12 +133,24 @@ class catanBoard(hexTile, Vertex):
         dist = ((v1.x - v2.x)**2 + (v1.y - v2.y)**2)**0.5
         return round(dist)
 
-
+    #View the board graph info
     def printGraph(self):
         print(len(self.boardGraph))
         for node in self.boardGraph.keys():
-            print(node, len(self.boardGraph[node].edgeList), self.boardGraph[node].adjacentHexList)
-            
+            print("Pixel:{}, Index:{}, NeighborVertexCount:{}, AdjacentHexes:{}".format(node, self.boardGraph[node].vertexIndex, len(self.boardGraph[node].edgeList), self.boardGraph[node].adjacentHexList))
+
+    #Update Board vertices with Port info
+    def updatePorts(self):
+        #Use this dictionary to map vertex indices to specific ports as per the game board - can add randomization later
+        port_dict = {'BRICK':[43,44], 'SHEEP':[33,34], 'WOOD':[45,49], 'WHEAT':[27,53], 'ORE':[24,29], '3:1':[30,31,36,39,41,42,51,52]}
+        
+        #Iterate thru each port and update vertex info
+        for portType, portVertexIndex_list in port_dict.items():
+            for v_index in portVertexIndex_list: #Each vertex
+                vertexPixel = self.vertex_index_to_pixel_dict[v_index] #Get the pixel coordinates to update the boardgraph
+                self.boardGraph[vertexPixel].port = portType #Update the port type
+
+    
     #Function to Display Catan Board Info
     def displayBoardInfo(self):
         for tile in self.hexTileList.values():
@@ -161,6 +177,13 @@ class catanBoard(hexTile, Vertex):
                 resourceText = self.font_resource.render(str(hexTile.resource.type) + " (" +str(hexTile.resource.num) + ")", False, (0,0,0))
                 self.screen.blit(resourceText, (hexTile.pixelCenter.x -25, hexTile.pixelCenter.y)) #add text to hex
 
+
+        #Display the Ports
+        for vCoord, vertexInfo in self.boardGraph.items():
+            if(vertexInfo.port != False):
+                portText = self.font_resource.render(vertexInfo.port + " PORT", False, (230,0,0))
+                self.screen.blit(portText, (vCoord.x, vCoord.y)) 
+            
         pygame.display.update()
 
         return None

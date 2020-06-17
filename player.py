@@ -31,7 +31,8 @@ class player():
         #Every time a player's build graph is updated the gameBoardGraph must also be updated
 
         #Each of the 3 lists store vertex information - Roads are stores with tuples of vertex pairs
-        self.buildGraph = {'ROADS':[], 'SETTLEMENTS':[], 'CITIES':[]} 
+        self.buildGraph = {'ROADS':[], 'SETTLEMENTS':[], 'CITIES':[]}
+        self.portList = [] #List of ports acquired
 
         #Dev cards in possession
         self.newDevCards = [] #List to keep the new dev cards draw - update the main list every turn
@@ -59,7 +60,7 @@ class player():
                 maxRoads = self.get_road_length(board)
                 self.maxRoadLength = maxRoads
 
-                print('Player {} Built a Road. MaxRoadLength: {}'.format(self.name, self.maxRoadLength))
+                print('{} Built a Road. MaxRoadLength: {}'.format(self.name, self.maxRoadLength))
 
         else:
             print("Insufficient Resources to Build Road - Need 1 BRICK, 1 WOOD")
@@ -85,7 +86,13 @@ class player():
                 
                 self.victoryPoints += 1
                 board.updateBoardGraph_settlement(vCoord, self) #update the overall boardGraph
-                print('Player {} Built a Settlement'.format(self.name))
+
+                #Add port to players port list if it is a new port
+                if((board.boardGraph[vCoord].port != False) and (board.boardGraph[vCoord].port not in self.portList)):
+                    self.portList.append(board.boardGraph[vCoord].port)
+                    print("{} now has {} Port access".format(self.name, board.boardGraph[vCoord].port))
+
+                print('{} Built a Settlement'.format(self.name))
   
         else:
             print("Insufficient Resources to Build Settlement. Build Cost: 1 BRICK, 1 WOOD, 1 WHEAT, 1 SHEEP")
@@ -105,7 +112,7 @@ class player():
                 self.victoryPoints += 1
 
                 board.updateBoardGraph_city(vCoord, self) #update the overall boardGraph
-                print('Player {} Built a City'.format(self.name))
+                print('{} Built a City'.format(self.name))
 
         else:
             print("Insufficient Resources to Build City. Build Cost: 3 ORE, 2 WHEAT")
@@ -259,7 +266,7 @@ class player():
                 self.newDevCards.append(cardDrawn)
                 board.devCardStack[cardDrawn] -= 1
             
-            print("Player {} drew a {} from Development Card Stack".format(self.name, cardDrawn))
+            print("{} drew a {} from Development Card Stack".format(self.name, cardDrawn))
 
         else:
             print("Insufficient Resources for Dev Card. Cost: 1 ORE, 1 WHEAT, 1 SHEEP")

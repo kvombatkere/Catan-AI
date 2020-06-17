@@ -113,6 +113,15 @@ class AI_Player(player):
         else:
             print("Insufficient resource {} to trade 4:1 with Bank".format(r1))
 
+    
+    #Function to propose a trade -> give r1 and get r2
+    #Propose a trade as a dictionary with {r1:amt_1, r2: amt_2} specifying the trade
+    #def propose_trade_with_players(self):
+    
+
+    #Function to accept/reject trade
+   # def respond_to_trade(self, r1_dict, r2_dict):
+
 
     #Function to find best action - based on gamestate
     def get_action(self):
