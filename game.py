@@ -40,7 +40,7 @@ class catanGame():
         self.font_Robber = pygame.font.SysFont('arialblack', 50) #robber font
 
         #Run functions to view board and vertex graph
-        self.board.printGraph()
+        #self.board.printGraph()
 
         #Functiont to go through initial set up
         self.build_initial_settlements()
@@ -229,7 +229,7 @@ class catanGame():
                         if(adjacentHex in hexResourcesRolled and self.board.hexTileDict[adjacentHex].robber == False): #This player gets a resource if hex is adjacent and no robber
                             resourceGenerated = self.board.hexTileDict[adjacentHex].resource.type
                             player_i.resources[resourceGenerated] += 1
-                            print("Player {} collects 1 {} from Settlement".format(player_i.name, resourceGenerated))
+                            print("{} collects 1 {} from Settlement".format(player_i.name, resourceGenerated))
                 
                 #Check each City the player has
                 for cityCoord in player_i.buildGraph['CITIES']:
@@ -237,7 +237,7 @@ class catanGame():
                         if(adjacentHex in hexResourcesRolled and self.board.hexTileDict[adjacentHex].robber == False): #This player gets a resource if hex is adjacent and no robber
                             resourceGenerated = self.board.hexTileDict[adjacentHex].resource.type
                             player_i.resources[resourceGenerated] += 2
-                            print("Player {} collects 2 {} from City".format(player_i.name, resourceGenerated))
+                            print("{} collects 2 {} from City".format(player_i.name, resourceGenerated))
 
                 print("Player:{}, Resources:{}, Points: {}".format(player_i.name, player_i.resources, player_i.victoryPoints))
                 #print('Dev Cards:{}'.format(player_i.devCards))
@@ -502,7 +502,8 @@ class catanGame():
 
                                 #Check if player wants to draw a development card - can play devCard whenever after rolling dice
                                 if(self.playDevCard_button.collidepoint(e.pos)):
-                                        currPlayer.play_devCard()
+                                        currPlayer.play_devCard(self)
+                                        self.displayGameScreen(None, None)#Update back to original gamescreen
                                         #Show updated points and resources  
                                         #print("Player:{}, Resources:{}, Points: {}".format(currPlayer.name, currPlayer.resources, currPlayer.victoryPoints))
                                         #print('Available Dev Cards:', currPlayer.devCards)

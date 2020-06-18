@@ -104,15 +104,6 @@ class AI_Player(player):
                         self.trade_with_bank(r1, r2)
                         break
 
-    #Function to basic trade 4:1 with bank
-    def trade_with_bank(self, r1, r2):
-        if(self.resources[r1] >= 4):
-            self.resources[r1] -= 4
-            self.resources[r2] += 1
-            print("Traded 4 {} for 1 {}".format(r1, r2))
-        else:
-            print("Insufficient resource {} to trade 4:1 with Bank".format(r1))
-
     
     #Function to propose a trade -> give r1 and get r2
     #Propose a trade as a dictionary with {r1:amt_1, r2: amt_2} specifying the trade
@@ -120,7 +111,7 @@ class AI_Player(player):
     
 
     #Function to accept/reject trade
-   # def respond_to_trade(self, r1_dict, r2_dict):
+    #def respond_to_trade(self, r1_dict, r2_dict):
 
 
     #Function to find best action - based on gamestate

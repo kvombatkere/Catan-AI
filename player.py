@@ -280,7 +280,7 @@ class player():
         self.newDevCards = []
 
     #function to play a development card
-    def play_devCard(self):
+    def play_devCard(self, game):
         'Update game state'
         #Check if player can play a devCard this turn
         if(self.devCardPlayedThisTurn):
@@ -315,8 +315,65 @@ class player():
         print("Playing Dev Card:", devCardPlayed)
         self.devCards[devCardPlayed] -= 1
 
-        #TO-DO: Add functionality to play a devCard
+        #Logic for each Dev Card
+        if(devCardPlayed == 'KNIGHT'): 
+            game.moveRobber_display(self)
 
+        if(devCardPlayed == 'ROADBUILDER'):
+            game.buildRoad_display(self)
+            game.displayGameScreen(None, None)#Update back to original gamescreen
+            game.buildRoad_display(self)
+            game.displayGameScreen(None, None)#Update back to original gamescreen
+
+        if(devCardPlayed == 'YEAROFPLENTY'):
+            resource_dict = {1:'BRICK', 2:'WOOD', 3:'WHEAT', 4:'SHEEP', 5:'ORE'}
+            print("Resources available by number:", resource_dict)
+            rNum1, rNum2 = -1, -1
+            while ((rNum1 not in resource_dict.keys()) and (rNum2 not in resource_dict.keys())):
+                rNum1 = int(input("Enter resource 1 number:"))
+                rNum2 = int(input("Enter resource 2 number:"))
+
+            self.resources[resource_dict[rNum1]] += 1
+            self.resources[resource_dict[rNum2]] += 1
+
+        if(devCardPlayed == 'MONOPOLY'):
+            resource_dict = {1:'BRICK', 2:'WOOD', 3:'WHEAT', 4:'SHEEP', 5:'ORE'}
+            print("Resources to monopolise by number:", resource_dict)
+            resourceNum = -1
+            while (resourceNum not in resource_dict.keys()):
+                resourceNum = int(input("Enter resource number to monopolise:"))
+
+            monopolisedResource = resource_dict[resourceNum]
+            for player in list(game.playerQueue.queue):
+                if(player != self):
+                    numLost = player.resources[monopolisedResource]
+                    player.resources[monopolisedResource] = 0
+                    self.resources[monopolisedResource] += numLost
+
+        return None
+
+
+    #Function to basic trade 4:1 with bank, or use ports to trade
+    def trade_with_bank(self, r1, r2):
+        if(r1 in self.portList and self.resources[r1] >= 2): #Can use 2:1 port with r1
+            self.resources[r1] -= 2
+            self.resources[r2] += 1
+            print("Traded 2 {} for 1 {} using {} Port".format(r1, r2, r1))
+
+        #Check for 3:1 Port
+        elif('3:1' in self.portList and self.resources[r1] >= 3):
+            self.resources[r1] -= 3
+            self.resources[r2] += 1
+            print("Traded 3 {} for 1 {} using 3:1 Port".format(r1, r2))
+
+        #Check 4:1 port
+        elif(self.resources[r1] >= 4):
+            self.resources[r1] -= 4
+            self.resources[r2] += 1
+            print("Traded 4 {} for 1 {}".format(r1, r2))
+        
+        else:
+            print("Insufficient resource {} to trade with Bank".format(r1))
 
     #function to initate a trade - with bank or other players
     def initiate_trade():

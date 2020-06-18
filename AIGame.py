@@ -96,7 +96,7 @@ class catanGame():
                 resourceGenerated = self.board.hexTileDict[adjacentHex].resource.type
                 if(resourceGenerated != 'DESERT'):
                     player_i.resources[resourceGenerated] += 1
-                    #print("Player {} collects 1 {} from Settlement".format(player_i.name, resourceGenerated))
+                    print("{} collects 1 {} from Settlement".format(player_i.name, resourceGenerated))
         
         pygame.time.delay(20000)
         self.gameSetup = False
@@ -203,7 +203,7 @@ class catanGame():
                         if(adjacentHex in hexResourcesRolled and self.board.hexTileDict[adjacentHex].robber == False): #This player gets a resource if hex is adjacent and no robber
                             resourceGenerated = self.board.hexTileDict[adjacentHex].resource.type
                             player_i.resources[resourceGenerated] += 1
-                            print("Player {} collects 1 {} from Settlement".format(player_i.name, resourceGenerated))
+                            print("{} collects 1 {} from Settlement".format(player_i.name, resourceGenerated))
                 
                 #Check each City the player has
                 for cityCoord in player_i.buildGraph['CITIES']:
@@ -211,7 +211,7 @@ class catanGame():
                         if(adjacentHex in hexResourcesRolled and self.board.hexTileDict[adjacentHex].robber == False): #This player gets a resource if hex is adjacent and no robber
                             resourceGenerated = self.board.hexTileDict[adjacentHex].resource.type
                             player_i.resources[resourceGenerated] += 2
-                            print("Player {} collects 2 {} from City".format(player_i.name, resourceGenerated))
+                            print("{} collects 2 {} from City".format(player_i.name, resourceGenerated))
 
                 print("Player:{}, Resources:{}, Points: {}".format(player_i.name, player_i.resources, player_i.victoryPoints))
                 #print('Dev Cards:{}'.format(player_i.devCards))
