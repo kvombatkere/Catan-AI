@@ -110,9 +110,9 @@ class AI_Player(player):
     #def propose_trade_with_players(self):
     
 
-    #Function to accept/reject trade
-    #def respond_to_trade(self, r1_dict, r2_dict):
-
+    #Function to accept/reject trade - return True if accept
+    #def accept_trade(self, r1_dict, r2_dict):
+        
 
     #Function to find best action - based on gamestate
     def get_action(self):

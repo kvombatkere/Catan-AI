@@ -9,7 +9,7 @@ from AIPlayer import *
 import queue
 import numpy as np
 import sys, pygame
-#import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 
 #Test Code
 class catanGame():
@@ -54,8 +54,8 @@ class catanGame():
         self.playCatan()
 
         #Plot diceStats histogram
-        # plt.hist(self.diceStats_list, bins = 11)
-        # plt.show()
+        plt.hist(self.diceStats_list, bins = 11)
+        plt.show()
 
         return None
     

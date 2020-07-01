@@ -87,12 +87,12 @@ class player():
                 self.victoryPoints += 1
                 board.updateBoardGraph_settlement(vCoord, self) #update the overall boardGraph
 
-                #Add port to players port list if it is a new port
+                print('{} Built a Settlement'.format(self.name))
+                
+                 #Add port to players port list if it is a new port
                 if((board.boardGraph[vCoord].port != False) and (board.boardGraph[vCoord].port not in self.portList)):
                     self.portList.append(board.boardGraph[vCoord].port)
                     print("{} now has {} Port access".format(self.name, board.boardGraph[vCoord].port))
-
-                print('{} Built a Settlement'.format(self.name))
   
         else:
             print("Insufficient Resources to Build Settlement. Build Cost: 1 BRICK, 1 WOOD, 1 WHEAT, 1 SHEEP")
@@ -318,6 +318,7 @@ class player():
         #Logic for each Dev Card
         if(devCardPlayed == 'KNIGHT'): 
             game.moveRobber_display(self)
+            self.knightsPlayed += 1 
 
         if(devCardPlayed == 'ROADBUILDER'):
             game.buildRoad_display(self)

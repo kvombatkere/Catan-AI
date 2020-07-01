@@ -7,7 +7,7 @@ import numpy as np
 from hexTile import *
 from hexLib import *
 from player import *
-import networkx as nx
+#import networkx as nx
 #import matplotlib.pyplot as plt
 import pygame
 
