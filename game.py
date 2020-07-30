@@ -500,13 +500,15 @@ class catanGame():
                                         print("Player:{}, Resources:{}, Points: {}".format(currPlayer.name, currPlayer.resources, currPlayer.victoryPoints))
                                         print('Available Dev Cards:', currPlayer.devCards)
 
-                                #Check if player wants to draw a development card - can play devCard whenever after rolling dice
+                                #Check if player wants to play a development card - can play devCard whenever after rolling dice
                                 if(self.playDevCard_button.collidepoint(e.pos)):
                                         currPlayer.play_devCard(self)
                                         self.displayGameScreen(None, None)#Update back to original gamescreen
+                                        #Check for Largest Army 
+                                        self.check_largest_army(currPlayer)
                                         #Show updated points and resources  
-                                        #print("Player:{}, Resources:{}, Points: {}".format(currPlayer.name, currPlayer.resources, currPlayer.victoryPoints))
-                                        #print('Available Dev Cards:', currPlayer.devCards)
+                                        print("Player:{}, Resources:{}, Points: {}".format(currPlayer.name, currPlayer.resources, currPlayer.victoryPoints))
+                                        print('Available Dev Cards:', currPlayer.devCards)
 
                                 #Check if player wants to end turn
                                 if(self.endTurn_button.collidepoint(e.pos)):
