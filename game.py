@@ -1,8 +1,7 @@
 #Karan Vombatkere
 #Summer 2020
 
-#Imports
-# 
+#Imports 
 from board import *
 from player import *
 from AIPlayer import *

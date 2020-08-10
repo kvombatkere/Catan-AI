@@ -2,7 +2,6 @@
 #Summer 2020
 
 #Imports
-# 
 from board import *
 from player import *
 from AIPlayer import *
