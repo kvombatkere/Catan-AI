@@ -177,7 +177,7 @@ class player():
         #Append current edge to list and increment road count
         edgeList.append(edge) #Append the road
         roadLength += 1
-        vertexList.append(edge[0]) #Append the firs vertex
+        vertexList.append(edge[0]) #Append the first vertex
         
         #Get new neighboring forward edges from this edge - not visited by the search yet
         road_neighbors_list = self.get_neighboring_roads(edge, boardGraph, edgeList, vertexList)
