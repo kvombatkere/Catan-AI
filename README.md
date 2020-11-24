@@ -1,5 +1,5 @@
 # CatanAI
-A Settler's of Catan framework built in Python with AI agents trained using deep Reinforcemen Learning. 
+A Settler's of Catan framework built in Python with AI agents trained using Reinforcement Learning. 
 The GUI is implemented using ```pygame```, while the game log is currently output through the terminal to allow for easy play and testing
 
 ![Catan Board](https://github.com/kvombatkere/Catan-AI/blob/master/images/catan_gui.png)
