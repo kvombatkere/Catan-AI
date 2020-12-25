@@ -147,7 +147,7 @@ class catanGame():
             if(hexTile.robber):
                 robberCoords = hexTile.pixelCenter
 
-        self.board.screen.blit(robberText, (robberCoords.x -20,robberCoords.y-35)) 
+        self.board.screen.blit(robberText, (int(robberCoords.x) -20, int(robberCoords.y)-35)) 
 
 
     #Function to display the gameState board - use to display intermediate build screens
