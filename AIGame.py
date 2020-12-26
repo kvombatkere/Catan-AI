@@ -1,5 +1,5 @@
 #Karan Vombatkere
-#Summer 2020
+#Settlers of Catan, 2020
 
 #Imports
 from board import *

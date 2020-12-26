@@ -1,5 +1,5 @@
 #Karan Vombatkere
-#Summer 2020
+#Settlers of Catan, 2020
 
 #Imports
 from string import *
@@ -13,12 +13,11 @@ import pygame
 
 pygame.init()
 
-###Class to implement Catan board
-##Use a graph representation for the board
+#Class to implement Catan board logic
+#Use a graph representation for the board
 class catanBoard(hexTile, Vertex):
-    'Class Definition for Catan Board '
+    'Class Definition for Catan Board Logic'
     #Object Creation - creates a random board configuration with hexTiles
-    #Takes
     def __init__(self):
         self.hexTileDict = {} #Dict to store all hextiles, with hexIndex as key
         self.vertex_index_to_pixel_dict = {} #Dict to store the Vertices coordinates with vertex indices as keys
@@ -31,7 +30,7 @@ class catanBoard(hexTile, Vertex):
         self.flat = Layout(layout_flat, Point(self.edgeLength, self.edgeLength), Point(self.width/2, self.height/2)) #specify Layout
 
         self.screen = pygame.display.set_mode(self.size)
-        pygame.display.set_caption('Catan')
+        pygame.display.set_caption('Settlers of Catan')
         self.font_resource = pygame.font.SysFont('cambria', 15)
 
         #Get a random permutation of indices 0-18 to use with the resource list
@@ -230,7 +229,10 @@ class catanBoard(hexTile, Vertex):
                     if((self.boardGraph[vertex_i].edgeState[indx] == False) and (self.boardGraph[vertex_i].state['Player'] in [None, player])): #Edge currently does not have a road and vertex isn't colonised by another player
                         if((v_i, vertex_i) not in colonisableRoads.keys() and (vertex_i, v_i) not in colonisableRoads.keys()): #If the edge isn't already there in both its regular + opposite orientation
                             #Add road and its rect
-                            colonisableRoads[(vertex_i, v_i)] = self.draw_possible_road((vertex_i, v_i), player.color)
+                            #colonisableRoads[(vertex_i, v_i)] = self.draw_possible_road((vertex_i, v_i), player.color)
+
+                            #Use boolean to keep track of potential roads
+                            colonisableRoads[(vertex_i, v_i)] = True
                             #print(vertex_i, v_i)
 
         return colonisableRoads
@@ -256,7 +258,8 @@ class catanBoard(hexTile, Vertex):
                     
                 #If all checks are good add this vertex and its rect as the value
                 if(canColonise):
-                    colonisableVertices[vertex_i] = self.draw_possible_settlement(vertex_i, player.color)
+                    #colonisableVertices[vertex_i] = self.draw_possible_settlement(vertex_i, player.color)
+                    colonisableVertices[vertex_i] = True
 
         return colonisableVertices
 
@@ -267,7 +270,8 @@ class catanBoard(hexTile, Vertex):
         colonisableVertices = {}
         #Check starting from each settlement the player already has
         for existingSettlement in player.buildGraph['SETTLEMENTS']:
-            colonisableVertices[existingSettlement] = self.draw_possible_city(existingSettlement, player.color)
+            #colonisableVertices[existingSettlement] = self.draw_possible_city(existingSettlement, player.color)
+            colonisableVertices[existingSettlement] = True
 
         return colonisableVertices
 
@@ -288,7 +292,8 @@ class catanBoard(hexTile, Vertex):
                     break
 
             if(canColonise): #If the vertex is colonisable add it to the dict with its Rect
-                colonisableVertices[vertexCoord] = self.draw_possible_settlement(vertexCoord, player.color)
+                #colonisableVertices[vertexCoord] = self.draw_possible_settlement(vertexCoord, player.color)
+                colonisableVertices[vertexCoord] = True
 
         return colonisableVertices
 
@@ -300,7 +305,8 @@ class catanBoard(hexTile, Vertex):
         latestSettlementCoords = player.buildGraph['SETTLEMENTS'][-1]
         for v_neighbor in self.boardGraph[latestSettlementCoords].edgeList:
             possibleRoad = (latestSettlementCoords, v_neighbor)
-            colonisableRoads[possibleRoad] = self.draw_possible_road(possibleRoad, player.color)
+            #colonisableRoads[possibleRoad] = self.draw_possible_road(possibleRoad, player.color)
+            colonisableRoads[possibleRoad] = True
         
         return colonisableRoads
 
@@ -351,7 +357,8 @@ class catanBoard(hexTile, Vertex):
         robberHexDict = {}
         for indx, hex_tile in self.hexTileDict.items():
             if(hex_tile.robber == False):
-                robberHexDict[indx] = self.draw_possible_robber(hex_tile.pixelCenter)
+                #robberHexDict[indx] = self.draw_possible_robber(hex_tile.pixelCenter)
+                robberHexDict[indx] = True
 
         return robberHexDict
 
@@ -372,7 +379,8 @@ class catanBoard(hexTile, Vertex):
             if(self.boardGraph[vertex].state['Player'] != None): #There is a settlement on this vertex
                 playerToRob = self.boardGraph[vertex].state['Player']
                 if(playerToRob not in playersToRobDict.keys()): #only add a player once with his/her first settlement/city
-                    playersToRobDict[playerToRob] = self.draw_possible_players_to_rob(vertex)
+                    #playersToRobDict[playerToRob] = self.draw_possible_players_to_rob(vertex)
+                    playersToRobDict[playerToRob] = True
 
         return playersToRobDict
 

@@ -1,7 +1,7 @@
 #Karan Vombatkere
-#Summer 2020
+#Settlers of Catan, 2020
 
-#IMPORTS
+#Imports
 import collections
 from hexLib import *
 

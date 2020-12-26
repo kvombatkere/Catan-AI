@@ -1,3 +1,6 @@
+#Karan Vombatkere
+#Settlers of Catan, 2020
+
 import tensorflow as tf
 mnist = tf.keras.datasets.mnist
 

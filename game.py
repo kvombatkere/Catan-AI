@@ -1,5 +1,5 @@
 #Karan Vombatkere
-#Summer 2020
+#Settlers of Catan, 2020
 
 #Imports 
 from board import *
@@ -9,7 +9,7 @@ import queue
 import numpy as np
 import sys, pygame
 
-#Test Code
+#Catan gameplay class definition
 class catanGame():
     #Create new gameboard
     def __init__(self):
