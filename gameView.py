@@ -8,15 +8,16 @@ from hexLib import *
 pygame.init()
 
 #Class to handle catan board display
-class catanBoardView():
+class catanGameView():
     'Class definition for Catan board display'
-    def __init__(self, catanBoardObject):
+    def __init__(self, catanBoardObject, catanGameObject):
         # self.hexTileDict = {} #Dict to store all hextiles, with hexIndex as key
         # self.vertex_index_to_pixel_dict = {} #Dict to store the Vertices coordinates with vertex indices as keys
         # self.boardGraph = {} #Dict to store the vertex objects with the pixelCoordinates as keys
         # self.resourcesList = self.getRandomResourceList()
 
         self.board = catanBoardObject
+        self.game = catanGameObject
 
         #Use pygame to display the board
         self.edgeLength = 80 #Specify for hex size
@@ -166,7 +167,7 @@ class catanBoardView():
         self.displayRobber()
 
         #Loop through and display all existing buildings from players build graphs
-        for player_i in list(self.playerQueue.queue): #Build Settlements and roads of each player
+        for player_i in list(self.game.playerQueue.queue): #Build Settlements and roads of each player
             for existingRoad in player_i.buildGraph['ROADS']:
                 self.draw_road(existingRoad, player_i.color)
             
@@ -177,14 +178,14 @@ class catanBoardView():
                 self.draw_city(cityCoord, player_i.color)
         
         if(gameScreenState == 'ROAD'): #Show screen with potential roads
-            if(self.gameSetup):
+            if(self.game.gameSetup):
                 potentialRoadDict = self.board.get_setup_roads(player)
             else:
                 potentialRoadDict = self.board.get_potential_roads(player)
             return potentialRoadDict
 
         if(gameScreenState == 'SETTLE'): #Show screen with potential settlements
-            if(self.gameSetup):
+            if(self.game.gameSetup):
                 potentialVertexDict = self.board.get_setup_settlements(player)
             else:
                 potentialVertexDict = self.board.get_potential_settlements(player)
@@ -209,9 +210,9 @@ class catanBoardView():
     #Function to display dice roll
     def displayDiceRoll(self, diceNums):
         #Reset blue background and show dice roll
-        pygame.draw.rect(self.board.screen, pygame.Color('royalblue2'), (100, 20, 50, 50)) #blue background
+        pygame.draw.rect(self.screen, pygame.Color('royalblue2'), (100, 20, 50, 50)) #blue background
         diceNum = self.font_diceRoll.render(str(diceNums), False, (0,0,0))
-        self.board.screen.blit(diceNum,(110, 20)) 
+        self.screen.blit(diceNum,(110, 20)) 
         
         return None
 
@@ -220,11 +221,17 @@ class catanBoardView():
     def buildRoad_display(self, currentPlayer):
         #Get all spots the player can build a road and display thin lines
         roadsPossibleDict = self.displayGameScreen('ROAD', currentPlayer) 
+
+        #Get Rect representation of roads and draw possible roads
+        for roadEdge in roadsPossibleDict.keys():
+            if roadsPossibleDict[roadEdge]:
+                roadsPossibleDict[roadEdge] = self.draw_possible_road(roadEdge, currentPlayer.color)
+
         pygame.display.update()
 
         mouseClicked = False #Get player actions until a mouse is clicked
         while(mouseClicked == False):
-            if(self.gameSetup):#during gameSetup phase only exit if road is built
+            if(self.game.gameSetup):#during gameSetup phase only exit if road is built
                 for e in pygame.event.get(): 
                     if e.type == pygame.QUIT:
                             sys.exit(0)
@@ -248,12 +255,18 @@ class catanBoardView():
     def buildSettlement_display(self, currentPlayer):
         #Get all spots the player can build a settlement and display thin circles
         verticesPossibleDict = self.displayGameScreen('SETTLE', currentPlayer) 
+
+        #Add in the Rect representations of possible settlements
+        for v in verticesPossibleDict.keys():
+            if verticesPossibleDict[v]:
+                verticesPossibleDict[v] = self.draw_possible_settlement(v, currentPlayer.color)
+
         pygame.display.update()
 
         mouseClicked = False #Get player actions until a mouse is clicked
 
         while(mouseClicked == False):
-            if(self.gameSetup): #during gameSetup phase only exit if settlement is built
+            if(self.game.gameSetup): #during gameSetup phase only exit if settlement is built
                 for e in pygame.event.get(): 
                     if e.type == pygame.QUIT:
                             sys.exit(0)
@@ -275,6 +288,12 @@ class catanBoardView():
     def buildCity_display(self, currentPlayer):
         #Get all spots the player can build a city and display circles
         verticesPossibleDict = self.displayGameScreen('CITY', currentPlayer) 
+
+        #Get Rect representation of roads and draw possible roads
+        for c in verticesPossibleDict.keys():
+            if verticesPossibleDict[c]:
+                verticesPossibleDict[c] = self.draw_possible_city(c, currentPlayer.color)
+
         pygame.display.update()
 
         mouseClicked = False #Get player actions until a mouse is clicked - whether a city is built or not
@@ -287,6 +306,7 @@ class catanBoardView():
                             currentPlayer.build_city(vertex, self.board)
                     
                     mouseClicked = True
+
 
     #Function to control the move-robber action with display
     def moveRobber_display(self, currentPlayer):

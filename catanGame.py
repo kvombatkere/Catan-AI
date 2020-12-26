@@ -3,7 +3,7 @@
 
 #Imports 
 from board import *
-from boardView import *
+from gameView import *
 from player import *
 from AIPlayer import *
 import queue
@@ -16,7 +16,6 @@ class catanGame():
     def __init__(self):
         print("Initializing Settlers of Catan Board...")
         self.board = catanBoard()
-        self.boardView = catanBoardView(self.board)
 
         #Game State variables
         self.gameOver = False
@@ -36,6 +35,9 @@ class catanGame():
         self.playerQueue = queue.Queue(self.numPlayers)
         self.gameSetup = True #Boolean to take care of setup phase
 
+        #Initialize boardview object
+        self.boardView = catanGameView(self.board, self)
+
         #Run functions to view board and vertex graph
         #self.board.printGraph()
 
@@ -44,8 +46,6 @@ class catanGame():
 
         #Display initial board
         self.boardView.displayGameScreen(None, None)
-    
-        
     
 
     #Function to initialize players + build initial settlements for players
@@ -64,6 +64,7 @@ class catanGame():
         playerList = list(self.playerQueue.queue)
 
         self.boardView.displayGameScreen(None, None) #display the initial gameScreen
+        print("Displaying Initial GAMESCREEN!")
 
         #Build Settlements and roads of each player forwards
         for player_i in playerList: 
@@ -108,7 +109,7 @@ class catanGame():
         diceRoll = dice_1 + dice_2
         print("Dice Roll = ", diceRoll, "{", dice_1, dice_2, "}")
 
-        self.displayDiceRoll(diceRoll)
+        self.boardView.displayDiceRoll(diceRoll)
 
         return diceRoll
 
