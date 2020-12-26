@@ -246,16 +246,17 @@ class catanGame():
                                     if(diceRolled == False): #Only roll dice once
                                         diceNum = self.rollDice()
                                         diceRolled = True
-
+                                        
+                                        self.boardView.displayDiceRoll(diceNum)
                                         #Code to update player resources with diceNum
                                         self.update_playerResources(diceNum, currPlayer)
 
                                 #Check if player wants to build road
-                                if(self.buildRoad_button.collidepoint(e.pos)):
+                                if(self.boardView.buildRoad_button.collidepoint(e.pos)):
                                     #Code to check if road is legal and build
                                     if(diceRolled == True): #Can only build after rolling dice
-                                        self.buildRoad_display(currPlayer)
-                                        self.displayGameScreen(None, None)#Update back to original gamescreen
+                                        self.boardView.buildRoad_display(currPlayer)
+                                        self.boardView.displayGameScreen(None, None)#Update back to original gamescreen
 
                                         #Check if player gets longest road and update Victory points
                                         self.check_longest_road(currPlayer)
@@ -263,23 +264,23 @@ class catanGame():
                                         print("Player:{}, Resources:{}, Points: {}".format(currPlayer.name, currPlayer.resources, currPlayer.victoryPoints))
 
                                 #Check if player wants to build settlement
-                                if(self.buildSettlement_button.collidepoint(e.pos)):
+                                if(self.boardView.buildSettlement_button.collidepoint(e.pos)):
                                     if(diceRolled == True): #Can only build settlement after rolling dice
-                                        self.buildSettlement_display(currPlayer)
-                                        self.displayGameScreen(None, None)#Update back to original gamescreen
+                                        self.boardView.buildSettlement_display(currPlayer)
+                                        self.boardView.displayGameScreen(None, None)#Update back to original gamescreen
                                         #Show updated points and resources  
                                         print("Player:{}, Resources:{}, Points: {}".format(currPlayer.name, currPlayer.resources, currPlayer.victoryPoints))
 
                                 #Check if player wants to build city
-                                if(self.buildCity_button.collidepoint(e.pos)):
+                                if(self.boardView.buildCity_button.collidepoint(e.pos)):
                                     if(diceRolled == True): #Can only build city after rolling dice
-                                        self.buildCity_display(currPlayer)
-                                        self.displayGameScreen(None, None)#Update back to original gamescreen
+                                        self.boardView.buildCity_display(currPlayer)
+                                        self.boardView.displayGameScreen(None, None)#Update back to original gamescreen
                                         #Show updated points and resources  
                                         print("Player:{}, Resources:{}, Points: {}".format(currPlayer.name, currPlayer.resources, currPlayer.victoryPoints))
 
                                 #Check if player wants to draw a development card
-                                if(self.devCard_button.collidepoint(e.pos)):
+                                if(self.boardView.devCard_button.collidepoint(e.pos)):
                                     if(diceRolled == True): #Can only draw devCard after rolling dice
                                         currPlayer.draw_devCard(self.board)
                                         #Show updated points and resources  
@@ -287,9 +288,9 @@ class catanGame():
                                         print('Available Dev Cards:', currPlayer.devCards)
 
                                 #Check if player wants to play a development card - can play devCard whenever after rolling dice
-                                if(self.playDevCard_button.collidepoint(e.pos)):
+                                if(self.boardView.playDevCard_button.collidepoint(e.pos)):
                                         currPlayer.play_devCard(self)
-                                        self.displayGameScreen(None, None)#Update back to original gamescreen
+                                        self.boardView.displayGameScreen(None, None)#Update back to original gamescreen
                                         #Check for Largest Army 
                                         self.check_largest_army(currPlayer)
                                         #Show updated points and resources  
@@ -297,7 +298,7 @@ class catanGame():
                                         print('Available Dev Cards:', currPlayer.devCards)
 
                                 #Check if player wants to end turn
-                                if(self.endTurn_button.collidepoint(e.pos)):
+                                if(self.boardView.endTurn_button.collidepoint(e.pos)):
                                     if(diceRolled == True): #Can only end turn after rolling dice
                                         print("Ending Turn!")
                                         turnOver = True  #Update flag to nextplayer turn
