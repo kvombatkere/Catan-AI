@@ -28,12 +28,6 @@ class catanBoard(hexTile, Vertex):
         self.size = self.width, self.height = 1000, 800
         self.flat = Layout(layout_flat, Point(self.edgeLength, self.edgeLength), Point(self.width/2, self.height/2)) #specify Layout
 
-        # #Use pygame to display the board
-
-        # self.screen = pygame.display.set_mode(self.size)
-        # pygame.display.set_caption('Settlers of Catan')
-        # self.font_resource = pygame.font.SysFont('cambria', 15)
-
         #Get a random permutation of indices 0-18 to use with the resource list
         randomIndices = np.random.permutation([i for i in range(len(self.resourcesList))])
         
@@ -65,11 +59,13 @@ class catanBoard(hexTile, Vertex):
 
         return None
 
+
     def getHexCoords(self, hexInd):
         #Dictionary to store Axial Coordinates (q, r) by hexIndex
         coordDict = {0:Axial_Point(0,0), 1:Axial_Point(0,-1), 2:Axial_Point(1,-1), 3:Axial_Point(1,0), 4:Axial_Point(0,1), 5:Axial_Point(-1,1), 6:Axial_Point(-1,0), 7:Axial_Point(0,-2), 8:Axial_Point(1,-2), 9:Axial_Point(2,-2), 10:Axial_Point(2,-1),
                         11:Axial_Point(2,0), 12:Axial_Point(1,1), 13:Axial_Point(0,2), 14:Axial_Point(-1,2), 15:Axial_Point(-2,2), 16:Axial_Point(-2,1), 17:Axial_Point(-2,0), 18:Axial_Point(-1,-1)}
         return coordDict[hexInd]
+
 
     #Function to generate a random permutation of resources
     def getRandomResourceList(self):
@@ -168,9 +164,6 @@ class catanBoard(hexTile, Vertex):
                 for indx, v_i in enumerate(self.boardGraph[vertex_i].edgeList):
                     if((self.boardGraph[vertex_i].edgeState[indx] == False) and (self.boardGraph[vertex_i].state['Player'] in [None, player])): #Edge currently does not have a road and vertex isn't colonised by another player
                         if((v_i, vertex_i) not in colonisableRoads.keys() and (vertex_i, v_i) not in colonisableRoads.keys()): #If the edge isn't already there in both its regular + opposite orientation
-                            #Add road and its rect
-                            #colonisableRoads[(vertex_i, v_i)] = self.draw_possible_road((vertex_i, v_i), player.color)
-
                             #Use boolean to keep track of potential roads
                             colonisableRoads[(vertex_i, v_i)] = True
                             #print(vertex_i, v_i)
@@ -256,12 +249,14 @@ class catanBoard(hexTile, Vertex):
         #Update edge from first vertex v1
         for indx, v in enumerate(self.boardGraph[v_coord1].edgeList):
             if(v == v_coord2):
-                self.boardGraph[v_coord1].edgeState[indx] = True
+                self.boardGraph[v_coord1].edgeState[indx][0] = player
+                self.boardGraph[v_coord1].edgeState[indx][1] = True
         
         #Update edge from second vertex v2
         for indx, v in enumerate(self.boardGraph[v_coord2].edgeList):
             if(v == v_coord1):
-                self.boardGraph[v_coord2].edgeState[indx] = True
+                self.boardGraph[v_coord2].edgeState[indx][0] = player
+                self.boardGraph[v_coord2].edgeState[indx][1] = True
 
         #self.draw_road([v_coord1, v_coord2], player.color) #Draw the settlement
 

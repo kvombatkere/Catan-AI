@@ -51,7 +51,7 @@ class Vertex():
         self.pixelCoordinates = pixelCoord
         self.edgeList = [] #List to store adjacent Vertices
         self.adjacentHexList = [adjHexIndex] #List to store indices of 3 adjacent hexes
-        self.edgeState = [False, False, False] #List to determine if a road is built on edge
+        self.edgeState = [[None, False], [None, False], [None, False]] #Nested list to determine if a road is built on edge, and player building road
 
         self.state = {'Player': None, 'Settlement':False, 'City':False} #Vertex state 
         self.port = False #Add the corresponding port (BRICK, SHEEP, WHEAT, WOOD, ORE, 3:1) later
