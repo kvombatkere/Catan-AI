@@ -224,6 +224,7 @@ class catanGame():
                 self.moveRobber_display(currentPlayer)
                 self.displayGameScreen(None, None)#Update back to original gamescreen
 
+
     #function to check if a player has the longest road - after building latest road
     def check_longest_road(self, player_i):
         if(player_i.maxRoadLength >= 5): #Only eligible if road length is at least 5
