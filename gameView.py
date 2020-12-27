@@ -196,6 +196,7 @@ class catanGameView():
         for roadEdge in roadsPossibleDict.keys():
             if roadsPossibleDict[roadEdge]:
                 roadsPossibleDict[roadEdge] = self.draw_possible_road(roadEdge, currentPlayer.color)
+                print("displaying road")
 
         pygame.display.update()
 
@@ -295,8 +296,7 @@ class catanGameView():
         #Get all spots the player can move robber to and show circles
         #Add in the Rect representations of possible robber spots
         for R in possibleRobberDict.keys():
-            if possibleRobberDict[R]:
-                possibleRobberDict[R] = self.draw_possible_robber(R)
+            possibleRobberDict[R] = self.draw_possible_robber(possibleRobberDict[R].pixelCenter)
 
         pygame.display.update()
 
@@ -308,8 +308,9 @@ class catanGameView():
                     for hexIndex, robberCircleRect in possibleRobberDict.items():
                         if(robberCircleRect.collidepoint(e.pos)): 
                             #Add code to choose which player to rob depending on hex clicked on
-                            possiblePlayerDict = self.board.get_players_to_rob(currentPlayer)
-                            playerToRob = self.choosePlayerToRob_display(hexIndex, possiblePlayerDict)
+                            possiblePlayerDict = self.board.get_players_to_rob(hexIndex)
+
+                            playerToRob = self.choosePlayerToRob_display(possiblePlayerDict)
 
                             #Move robber to that hex and rob
                             #currentPlayer.move_robber(hexIndex, self.board, playerToRob) #Player moved robber to this hex
@@ -319,12 +320,10 @@ class catanGameView():
     
     #Function to control the choice of player to rob with display
     #Returns the choice of player to rob
-    def choosePlayerToRob_display(self, hexIndex, possiblePlayerDict):
-        #Get all spots the player can move robber to and show circles
-        #Add in the Rect representations of possible robber spots
-        for p in possiblePlayerDict.keys():
-            if possiblePlayerDict[p]:
-                possiblePlayerDict[p] = self.draw_possible_players_to_rob(p)
+    def choosePlayerToRob_display(self, possiblePlayerDict):
+        #Get all other players the player can move robber to and show circles
+        for player, vertex in possiblePlayerDict.items():
+            possiblePlayerDict[player] = self.draw_possible_players_to_rob(vertex)
         
         pygame.display.update()
 

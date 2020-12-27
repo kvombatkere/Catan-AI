@@ -83,6 +83,7 @@ class catanGame():
         for player_i in playerList: 
             if(player_i.isAI):
                 player_i.initial_setup(self.board)
+                self.boardView.displayGameScreen()
 
             else:
                 self.build(player_i, 'SETTLE')
@@ -133,9 +134,9 @@ class catanGame():
 
 
     #Wrapper Function to handle robber functionality
-    def robber(self, player)
+    def robber(self, player):
         potentialRobberDict = self.board.get_robber_spots()
-        print("Move Robber")
+        print("Move Robber!")
 
         hex_i, playerRobbed = self.boardView.moveRobber_display(player, potentialRobberDict)
         player.move_robber(hex_i, self.board, playerRobbed)
@@ -145,7 +146,7 @@ class catanGame():
     def rollDice(self):
         dice_1 = np.random.randint(1,7)
         dice_2 = np.random.randint(1,7)
-        diceRoll = dice_1 + dice_2
+        diceRoll = 7 #dice_1 + dice_2
         print("Dice Roll = ", diceRoll, "{", dice_1, dice_2, "}")
 
         self.boardView.displayDiceRoll(diceRoll)

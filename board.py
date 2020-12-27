@@ -162,7 +162,7 @@ class catanBoard(hexTile, Vertex):
             for vertex_i in existingRoad: #Iterate over both vertices of this road
                 #Check neighbors from this vertex
                 for indx, v_i in enumerate(self.boardGraph[vertex_i].edgeList):
-                    if((self.boardGraph[vertex_i].edgeState[indx] == False) and (self.boardGraph[vertex_i].state['Player'] in [None, player])): #Edge currently does not have a road and vertex isn't colonised by another player
+                    if((self.boardGraph[vertex_i].edgeState[indx][1] == False) and (self.boardGraph[vertex_i].state['Player'] in [None, player])): #Edge currently does not have a road and vertex isn't colonised by another player
                         if((v_i, vertex_i) not in colonisableRoads.keys() and (vertex_i, v_i) not in colonisableRoads.keys()): #If the edge isn't already there in both its regular + opposite orientation
                             #Use boolean to keep track of potential roads
                             colonisableRoads[(vertex_i, v_i)] = True
@@ -293,7 +293,7 @@ class catanBoard(hexTile, Vertex):
         for indx, hex_tile in self.hexTileDict.items():
             if(hex_tile.robber == False):
                 #robberHexDict[indx] = self.draw_possible_robber(hex_tile.pixelCenter)
-                robberHexDict[indx] = True
+                robberHexDict[indx] = hex_tile
 
         return robberHexDict
 
@@ -310,7 +310,7 @@ class catanBoard(hexTile, Vertex):
                 playerToRob = self.boardGraph[vertex].state['Player']
                 if(playerToRob not in playersToRobDict.keys()): #only add a player once with his/her first settlement/city
                     #playersToRobDict[playerToRob] = self.draw_possible_players_to_rob(vertex)
-                    playersToRobDict[playerToRob] = True
+                    playersToRobDict[playerToRob] = vertex
 
         return playersToRobDict
 
