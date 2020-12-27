@@ -5,7 +5,7 @@
 from board import *
 from gameView import *
 from player import *
-from AIPlayer import *
+from heuristicAIPlayer import *
 import queue
 import numpy as np
 import sys, pygame
@@ -41,7 +41,7 @@ class catanAIGame():
         self.gameSetup = True #Boolean to take care of setup phase
 
         #Initialize boardview object
-        #self.boardView = catanGameView(self.board, self)
+        self.boardView = catanGameView(self.board, self)
 
         #Functiont to go through initial set up
         self.build_initial_settlements()
@@ -60,7 +60,7 @@ class catanAIGame():
         playerColors = ['black', 'darkslateblue', 'magenta4', 'orange1']
         for i in range(self.numPlayers):
             playerNameInput = input("Enter AI Player {} name: ".format(i+1))
-            newPlayer = AI_Player(playerNameInput, playerColors[i])
+            newPlayer = heuristicAIPlayer(playerNameInput, playerColors[i])
             newPlayer.updateAI()
             self.playerQueue.put(newPlayer)
 
@@ -69,18 +69,18 @@ class catanAIGame():
         #Build Settlements and roads of each player forwards
         for player_i in playerList: 
             player_i.initial_setup(self.board)
-            #pygame.event.pump()
-            #self.boardView.displayGameScreen()
-            #pygame.time.delay(1000)
+            pygame.event.pump()
+            self.boardView.displayGameScreen()
+            pygame.time.delay(1000)
 
 
         #Build Settlements and roads of each player reverse
         playerList.reverse()
         for player_i in playerList: 
             player_i.initial_setup(self.board)
-            #pygame.event.pump()
-            #self.boardView.displayGameScreen()
-            #pygame.time.delay(1000)
+            pygame.event.pump()
+            self.boardView.displayGameScreen()
+            pygame.time.delay(1000)
             
             print("Player {} starts with {} resources".format(player_i.name, len(player_i.setupResources)))
 
@@ -92,7 +92,7 @@ class catanAIGame():
                     player_i.resources[resourceGenerated] += 1
                     print("{} collects 1 {} from Settlement".format(player_i.name, resourceGenerated))
         
-        #pygame.time.delay(20000)
+        pygame.time.delay(5000)
         self.gameSetup = False
 
 
@@ -209,7 +209,7 @@ class catanAIGame():
                     #TO-DO: Add option of AI Player playing a dev card prior to dice roll
                     
                     #Roll Dice and update player resources and dice stats
-                    #pygame.event.pump()
+                    pygame.event.pump()
                     diceNum = self.rollDice()
                     diceRolled = True
                     self.update_playerResources(diceNum, currPlayer)
@@ -221,8 +221,8 @@ class catanAIGame():
                     self.check_longest_road(currPlayer)
                     print("Player:{}, Resources:{}, Points: {}".format(currPlayer.name, currPlayer.resources, currPlayer.victoryPoints))
                     
-                    #self.boardView.displayGameScreen()#Update back to original gamescreen
-                    #pygame.time.delay(300)
+                    self.boardView.displayGameScreen()#Update back to original gamescreen
+                    pygame.time.delay(300)
                     turnOver = True
                     
                     #Check if game is over
@@ -233,7 +233,7 @@ class catanAIGame():
                         print("PLAYER {} WINS IN {} TURNS!".format(currPlayer.name, numTurns))
                         print(self.diceStats)
                         print("Exiting game in 10 seconds...")
-                        #pygame.time.delay(30000)
+                        pygame.time.delay(30000)
                         break
 
                 if(self.gameOver):

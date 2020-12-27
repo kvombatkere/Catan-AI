@@ -7,7 +7,7 @@ from player import *
 import numpy as np
 
 #Class definition for an AI player
-class AI_Player(player):
+class heuristicAIPlayer(player):
     
     #Update AI player flag and resources
     def updateAI(self): 
