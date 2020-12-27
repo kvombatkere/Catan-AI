@@ -314,11 +314,6 @@ class catanBoard(hexTile, Vertex):
 
         return playersToRobDict
 
-    #Function to draw possible players to rob
-    def draw_possible_players_to_rob(self, vertexCoord):
-        possiblePlayer = pygame.draw.circle(self.screen, pygame.Color('black'), (int(vertexCoord.x), int(vertexCoord.y)), 35, 5)
-        return possiblePlayer
-
 
     #Function to get a hexTile with a particular number
     def getHexResourceRolled(self, diceRollNum):

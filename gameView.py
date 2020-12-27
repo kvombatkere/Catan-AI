@@ -98,7 +98,11 @@ class catanGameView():
         possibleRobber = pygame.draw.circle(self.screen, pygame.Color('black'), (int(vertexToDraw.x), int(vertexToDraw.y)), 50, 5)
         return possibleRobber
 
-
+    #Function to draw possible players to rob
+    def draw_possible_players_to_rob(self, vertexCoord):
+        possiblePlayer = pygame.draw.circle(self.screen, pygame.Color('black'), (int(vertexCoord.x), int(vertexCoord.y)), 35, 5)
+        return possiblePlayer
+        
 
     #Function to render basic gameplay buttons
     def displayGameButtons(self):
@@ -152,7 +156,7 @@ class catanGameView():
 
     #Function to display the gameState board - use to display intermediate build screens
     #gameScreenState specifies which type of screen is to be shown
-    def displayGameScreen(self, gameScreenState, player):
+    def displayGameScreen(self):
         #First display all initial hexes and regular buttons
         self.displayInitialBoard()
         self.displayGameButtons()
@@ -168,33 +172,6 @@ class catanGameView():
 
             for cityCoord in player_i.buildGraph['CITIES']:
                 self.draw_city(cityCoord, player_i.color)
-        
-        if(gameScreenState == 'ROAD'): #Show screen with potential roads
-            if(self.game.gameSetup):
-                potentialRoadDict = self.board.get_setup_roads(player)
-            else:
-                potentialRoadDict = self.board.get_potential_roads(player)
-            return potentialRoadDict
-
-        if(gameScreenState == 'SETTLE'): #Show screen with potential settlements
-            if(self.game.gameSetup):
-                potentialVertexDict = self.board.get_setup_settlements(player)
-            else:
-                potentialVertexDict = self.board.get_potential_settlements(player)
-            return potentialVertexDict
-
-        if(gameScreenState == 'CITY'): 
-            potentialVertexDict = self.board.get_potential_cities(player)
-            return potentialVertexDict
-
-        if(gameScreenState == 'ROBBER'):
-            potentialRobberDict = self.board.get_robber_spots()
-            print("Move Robber")
-            return potentialRobberDict
-
-        if(gameScreenState == 'ROB_PLAYER'):
-            potentialPlayersDict = self.board.get_players_to_rob(player) #Note here player is actually hexIndex
-            return potentialPlayersDict
 
         #TO-DO Add screens for trades
 
@@ -209,11 +186,12 @@ class catanGameView():
         return None
 
     
-    #Function to control build-road action with display
-    def buildRoad_display(self, currentPlayer):
+    def buildRoad_display(self, currentPlayer, roadsPossibleDict):
+        '''Function to control build-road action with display
+        args: player, who is building road; roadsPossibleDict - possible roads
+        returns: road edge of road to be built
+        '''
         #Get all spots the player can build a road and display thin lines
-        roadsPossibleDict = self.displayGameScreen('ROAD', currentPlayer) 
-
         #Get Rect representation of roads and draw possible roads
         for roadEdge in roadsPossibleDict.keys():
             if roadsPossibleDict[roadEdge]:
@@ -230,24 +208,29 @@ class catanGameView():
                     if(e.type == pygame.MOUSEBUTTONDOWN):
                         for road, roadRect in roadsPossibleDict.items():
                             if(roadRect.collidepoint(e.pos)): 
-                                currentPlayer.build_road(road[0], road[1], self.board)
+                                #currentPlayer.build_road(road[0], road[1], self.board)
                                 mouseClicked = True
+                                return road
+
 
             else: 
                 for e in pygame.event.get(): 
                     if(e.type == pygame.MOUSEBUTTONDOWN): #Exit this loop on mouseclick
                         for road, roadRect in roadsPossibleDict.items():
                             if(roadRect.collidepoint(e.pos)): 
-                                currentPlayer.build_road(road[0], road[1], self.board)
-                        
+                                #currentPlayer.build_road(road[0], road[1], self.board)
+                                return road
+
                         mouseClicked = True
+                        return None
                         
 
-    #Function to control build-setttlment action with display
-    def buildSettlement_display(self, currentPlayer):
+    def buildSettlement_display(self, currentPlayer, verticesPossibleDict):
+        '''Function to control build-settlement action with display
+        args: player, who is building settlement; verticesPossibleDict - dictionary of possible settlement vertices
+        returns: vertex of settlement to be built
+        '''
         #Get all spots the player can build a settlement and display thin circles
-        verticesPossibleDict = self.displayGameScreen('SETTLE', currentPlayer) 
-
         #Add in the Rect representations of possible settlements
         for v in verticesPossibleDict.keys():
             if verticesPossibleDict[v]:
@@ -264,23 +247,28 @@ class catanGameView():
                             sys.exit(0)
                     if(e.type == pygame.MOUSEBUTTONDOWN):
                         for vertex, vertexRect in verticesPossibleDict.items():
-                            if(vertexRect.collidepoint(e.pos)): 
-                                currentPlayer.build_settlement(vertex, self.board)
+                            if(vertexRect.collidepoint(e.pos)):
+                                #currentPlayer.build_settlement(vertex, self.board)
                                 mouseClicked = True
+                                return vertex
             else:
                 for e in pygame.event.get(): 
                     if(e.type == pygame.MOUSEBUTTONDOWN): #Exit this loop on mouseclick
                         for vertex, vertexRect in verticesPossibleDict.items():
                             if(vertexRect.collidepoint(e.pos)): 
-                                currentPlayer.build_settlement(vertex, self.board)
+                                #currentPlayer.build_settlement(vertex, self.board)
+                                return vertex
                         
                         mouseClicked = True
+                        return None
 
-    #Function to control the build-city action with display
-    def buildCity_display(self, currentPlayer):
+
+    def buildCity_display(self, currentPlayer, verticesPossibleDict):
+        '''Function to control build-city action with display
+        args: player, who is building city; verticesPossibleDict - dictionary of possible city vertices
+        returns: city vertex of city to be built
+        '''
         #Get all spots the player can build a city and display circles
-        verticesPossibleDict = self.displayGameScreen('CITY', currentPlayer) 
-
         #Get Rect representation of roads and draw possible roads
         for c in verticesPossibleDict.keys():
             if verticesPossibleDict[c]:
@@ -295,15 +283,21 @@ class catanGameView():
                 if(e.type == pygame.MOUSEBUTTONDOWN): #Exit this loop on mouseclick
                     for vertex, vertexRect in verticesPossibleDict.items():
                         if(vertexRect.collidepoint(e.pos)): 
-                            currentPlayer.build_city(vertex, self.board)
+                            #currentPlayer.build_city(vertex, self.board)
+                            return vertex
                     
                     mouseClicked = True
+                    return None
 
 
     #Function to control the move-robber action with display
-    def moveRobber_display(self, currentPlayer):
+    def moveRobber_display(self, currentPlayer, possibleRobberDict):
         #Get all spots the player can move robber to and show circles
-        possibleRobberDict = self.displayGameScreen('ROBBER', currentPlayer) 
+        #Add in the Rect representations of possible robber spots
+        for R in possibleRobberDict.keys():
+            if possibleRobberDict[R]:
+                possibleRobberDict[R] = self.draw_possible_robber(R)
+
         pygame.display.update()
 
         mouseClicked = False #Get player actions until a mouse is clicked - whether a road is built or not
@@ -314,18 +308,24 @@ class catanGameView():
                     for hexIndex, robberCircleRect in possibleRobberDict.items():
                         if(robberCircleRect.collidepoint(e.pos)): 
                             #Add code to choose which player to rob depending on hex clicked on
-                            playerToRob = self.choosePlayerToRob_display(hexIndex)
+                            possiblePlayerDict = self.board.get_players_to_rob(currentPlayer)
+                            playerToRob = self.choosePlayerToRob_display(hexIndex, possiblePlayerDict)
 
                             #Move robber to that hex and rob
-                            currentPlayer.move_robber(hexIndex, self.board, playerToRob) #Player moved robber to this hex
+                            #currentPlayer.move_robber(hexIndex, self.board, playerToRob) #Player moved robber to this hex
                             mouseClicked = True #Only exit out once a correct robber spot is chosen
+                            return hexIndex, playerToRob
 
     
     #Function to control the choice of player to rob with display
     #Returns the choice of player to rob
-    def choosePlayerToRob_display(self, hexIndex):
+    def choosePlayerToRob_display(self, hexIndex, possiblePlayerDict):
         #Get all spots the player can move robber to and show circles
-        possiblePlayerDict = self.displayGameScreen('ROB_PLAYER', hexIndex)
+        #Add in the Rect representations of possible robber spots
+        for p in possiblePlayerDict.keys():
+            if possiblePlayerDict[p]:
+                possiblePlayerDict[p] = self.draw_possible_players_to_rob(p)
+        
         pygame.display.update()
 
         #If dictionary is empty return None
@@ -339,5 +339,3 @@ class catanGameView():
                     for playerToRob, playerCircleRect in possiblePlayerDict.items():
                         if(playerCircleRect.collidepoint(e.pos)): 
                             return playerToRob
-
-        
