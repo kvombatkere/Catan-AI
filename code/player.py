@@ -321,10 +321,10 @@ class player():
             self.knightsPlayed += 1 
 
         if(devCardPlayed == 'ROADBUILDER'):
-            game.buildRoad_display(self)
-            game.displayGameScreen(None, None)#Update back to original gamescreen
-            game.buildRoad_display(self)
-            game.displayGameScreen(None, None)#Update back to original gamescreen
+            game.build(self, 'ROAD')
+            game.boardView.displayGameScreen()
+            game.build(self, 'ROAD')
+            game.boardView.displayGameScreen()
 
         if(devCardPlayed == 'YEAROFPLENTY'):
             resource_dict = {1:'BRICK', 2:'WOOD', 3:'WHEAT', 4:'SHEEP', 5:'ORE'}
