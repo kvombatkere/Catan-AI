@@ -5,7 +5,7 @@
 from board import *
 from gameView import *
 from player import *
-from AIPlayer import *
+from heuristicAIPlayer import *
 import queue
 import numpy as np
 import sys, pygame
@@ -57,7 +57,7 @@ class catanGame():
             newPlayer = player(playerNameInput, playerColors[i])
             self.playerQueue.put(newPlayer)
 
-        test_AI_player = AI_Player('Random-Greedy-AI', playerColors[i+1]) #Add the AI Player last
+        test_AI_player = heuristicAIPlayer('Random-Greedy-AI', playerColors[i+1]) #Add the AI Player last
         test_AI_player.updateAI()
         self.playerQueue.put(test_AI_player)
 
@@ -101,6 +101,8 @@ class catanGame():
                     print("{} collects 1 {} from Settlement".format(player_i.name, resourceGenerated))
 
         self.gameSetup = False
+
+        return
 
 
     #Generic function to handle all building in the game - interface with gameView
@@ -183,6 +185,7 @@ class catanGame():
                 #print("RoadsLeft:{}, SettlementsLeft:{}, CitiesLeft:{}".format(player_i.roadsLeft, player_i.settlementsLeft, player_i.citiesLeft))
                 print('MaxRoadLength:{}, LongestRoad:{}\n'.format(player_i.maxRoadLength, player_i.longestRoadFlag))
         
+        #Logic for robber
         else:
             if(currentPlayer.isAI):
                 print("AI doesn't steal yet! :)")

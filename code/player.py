@@ -148,6 +148,7 @@ class player():
         self.resources[resourceStolen] += 1
         print("Stole 1 {} from Player {}".format(resourceStolen, player_2.name))
         
+        
     #Function to calculate road length for longest road calculation
     #Use both player buildgraph and board graph to compute recursively
     def get_road_length(self, board):

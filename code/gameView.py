@@ -20,7 +20,6 @@ class catanGameView():
         self.font_resource = pygame.font.SysFont('cambria', 15)
         self.font_ports = pygame.font.SysFont('cambria', 12)
 
-
         self.font_button = pygame.font.SysFont('cambria', 12)
         self.font_diceRoll = pygame.font.SysFont('cambria', 25) #dice font
         self.font_Robber = pygame.font.SysFont('arialblack', 50) #robber font
@@ -51,7 +50,7 @@ class catanGameView():
         #Display the Ports
         for vCoord, vertexInfo in self.board.boardGraph.items():
             if(vertexInfo.port != False):
-                portText = self.font_ports.render(vertexInfo.port, False, (230,0,0))
+                portText = self.font_ports.render(vertexInfo.port, False, (220,0,0))
                 self.screen.blit(portText, (vCoord.x, vCoord.y)) 
             
         pygame.display.update()

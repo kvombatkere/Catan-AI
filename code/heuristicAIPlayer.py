@@ -105,6 +105,18 @@ class heuristicAIPlayer(player):
                         break
 
     
+    #Choose which player to rob
+    def choose_player_to_rob(self, board):
+        '''Heuristic function to choose the player with maximum points.
+        Choose hex with maximum other players
+        Avoid blocking own resource
+        '''
+        #Get list of robber spots
+        robberHexDict = board.get_robber_spots()
+
+
+
+    
     #Function to propose a trade -> give r1 and get r2
     #Propose a trade as a dictionary with {r1:amt_1, r2: amt_2} specifying the trade
     #def propose_trade_with_players(self):
