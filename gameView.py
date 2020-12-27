@@ -173,6 +173,8 @@ class catanGameView():
             for cityCoord in player_i.buildGraph['CITIES']:
                 self.draw_city(cityCoord, player_i.color)
 
+        pygame.display.update()
+        return
         #TO-DO Add screens for trades
 
 

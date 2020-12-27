@@ -3,6 +3,7 @@
 
 #Imports
 from board import *
+from gameView import *
 from player import *
 from AIPlayer import *
 import queue
@@ -10,11 +11,11 @@ import numpy as np
 import sys, pygame
 import matplotlib.pyplot as plt
 
-#Test Code
-class catanGame():
+#Class to implement an only AI
+class catanAIGame():
     #Create new gameboard
     def __init__(self):
-        print("Initializing Catan...")
+        print("Initializing Settlers of Catan with only AI Players...")
         self.board = catanBoard()
 
         #Game State variables
@@ -39,17 +40,11 @@ class catanGame():
         self.playerQueue = queue.Queue(self.numPlayers)
         self.gameSetup = True #Boolean to take care of setup phase
 
-        self.font_button = pygame.font.SysFont('cambria', 12)
-        self.font_diceRoll = pygame.font.SysFont('cambria', 25) #dice font
-        self.font_Robber = pygame.font.SysFont('arialblack', 50) #robber font
+        #Initialize boardview object
+        #self.boardView = catanGameView(self.board, self)
 
         #Functiont to go through initial set up
         self.build_initial_settlements()
-
-        #Display initial board
-        #self.displayGameScreen(None, None)
-        #Run functions to view board and vertex graph
-        #self.board.printGraph()
         self.playCatan()
 
         #Plot diceStats histogram
@@ -74,18 +69,18 @@ class catanGame():
         #Build Settlements and roads of each player forwards
         for player_i in playerList: 
             player_i.initial_setup(self.board)
-            pygame.event.pump()
-            self.displayGameScreen()
-            pygame.time.delay(1000)
+            #pygame.event.pump()
+            #self.boardView.displayGameScreen()
+            #pygame.time.delay(1000)
 
 
         #Build Settlements and roads of each player reverse
         playerList.reverse()
         for player_i in playerList: 
             player_i.initial_setup(self.board)
-            pygame.event.pump()
-            self.displayGameScreen()
-            pygame.time.delay(1000)
+            #pygame.event.pump()
+            #self.boardView.displayGameScreen()
+            #pygame.time.delay(1000)
             
             print("Player {} starts with {} resources".format(player_i.name, len(player_i.setupResources)))
 
@@ -97,80 +92,8 @@ class catanGame():
                     player_i.resources[resourceGenerated] += 1
                     print("{} collects 1 {} from Settlement".format(player_i.name, resourceGenerated))
         
-        pygame.time.delay(20000)
+        #pygame.time.delay(20000)
         self.gameSetup = False
-
-    #Function to render basic gameplay buttons
-    def displayGameButtons(self):
-        #Basic GamePlay Buttons
-        diceRollText = self.font_button.render("ROLL DICE", False, (0,0,0))
-        buildRoadText = self.font_button.render("ROAD", False, (0,0,0))       
-        buildSettleText = self.font_button.render("SETTLE", False, (0,0,0))
-        buildCityText = self.font_button.render("CITY", False, (0,0,0))
-        endTurnText = self.font_button.render("END TURN", False, (0,0,0))
-        devCardText = self.font_button.render("DEV CARD", False, (0,0,0))
-        playDevCardText = self.font_button.render("PLAY DEV CARD", False, (0,0,0))
-
-        self.rollDice_button = pygame.Rect(20, 10, 80, 40)
-        self.buildRoad_button = pygame.Rect(20, 70, 80, 40)
-        self.buildSettlement_button = pygame.Rect(20, 120, 80, 40)
-        self.buildCity_button = pygame.Rect(20, 170, 80, 40)
-        self.devCard_button = pygame.Rect(20, 220, 80, 40)
-        self.playDevCard_button = pygame.Rect(20, 270, 80, 40)
-        self.endTurn_button = pygame.Rect(20, 330, 80, 40)
-
-        pygame.draw.rect(self.board.screen, pygame.Color('darkgreen'), self.rollDice_button) 
-        pygame.draw.rect(self.board.screen, pygame.Color('gray33'), self.buildRoad_button) 
-        pygame.draw.rect(self.board.screen, pygame.Color('gray33'), self.buildSettlement_button) 
-        pygame.draw.rect(self.board.screen, pygame.Color('gray33'), self.buildCity_button)
-        pygame.draw.rect(self.board.screen, pygame.Color('gray33'), self.devCard_button)
-        pygame.draw.rect(self.board.screen, pygame.Color('gray33'), self.playDevCard_button) 
-        pygame.draw.rect(self.board.screen, pygame.Color('burlywood'), self.endTurn_button) 
-
-        self.board.screen.blit(diceRollText,(30, 20)) 
-        self.board.screen.blit(buildRoadText,(30,80)) 
-        self.board.screen.blit(buildSettleText,(30,130))
-        self.board.screen.blit(buildCityText, (30,180))
-        self.board.screen.blit(devCardText, (30,230))
-        self.board.screen.blit(playDevCardText, (30,280))
-        self.board.screen.blit(endTurnText,(30,340))
-
-    #Function to display robber
-    def displayRobber(self):
-        #Robber text
-        robberText = self.font_Robber.render("R", False, (0,0,0))
-        #Get the coordinates for the robber
-        for hexTile in self.board.hexTileDict.values():
-            if(hexTile.robber):
-                robberCoords = hexTile.pixelCenter
-
-        self.board.screen.blit(robberText, (robberCoords.x -20,robberCoords.y-35)) 
-
-
-    #Function to display the gameState board - use to display intermediate build screens
-    #gameScreenState specifies which type of screen is to be shown
-    def displayGameScreen(self):
-        #First display all initial hexes and regular buttons
-        self.board.displayInitialBoard()
-        self.displayGameButtons()
-        self.displayRobber()
-
-        #Loop through and display all existing buildings from players build graphs
-        for player_i in list(self.playerQueue.queue): #Build Settlements and roads of each player
-            for existingRoad in player_i.buildGraph['ROADS']:
-                #print("displaying roads for:", player_i.name)
-                self.board.draw_road(existingRoad, player_i.color)
-            
-            for settlementCoord in player_i.buildGraph['SETTLEMENTS']:
-                #print("displaying buildings for:", player_i.name)
-                self.board.draw_settlement(settlementCoord, player_i.color)
-
-            for cityCoord in player_i.buildGraph['CITIES']:
-                self.board.draw_city(cityCoord, player_i.color)
-        
-        pygame.display.update()
-        return
-        
 
 
     #Function to roll dice 
@@ -179,11 +102,6 @@ class catanGame():
         dice_2 = np.random.randint(1,7)
         diceRoll = dice_1 + dice_2
         print("Dice Roll = ", diceRoll, "{", dice_1, dice_2, "}")
-
-        #Reset blue background and show dice roll
-        pygame.draw.rect(self.board.screen, pygame.Color('royalblue2'), (100, 20, 50, 50)) #blue background
-        diceNum = self.font_diceRoll.render(str(diceRoll), False, (0,0,0))
-        self.board.screen.blit(diceNum,(110, 20)) 
 
         return diceRoll
 
@@ -218,11 +136,7 @@ class catanGame():
                 print('MaxRoadLength:{}, LongestRoad:{}\n'.format(player_i.maxRoadLength, player_i.longestRoadFlag))
         
         else:
-            if(currentPlayer.isAI):
-                print("AI doesn't steal yet! :)")
-            else:
-                self.moveRobber_display(currentPlayer)
-                self.displayGameScreen(None, None)#Update back to original gamescreen
+            print("AI doesn't steal yet! :)")
 
 
     #function to check if a player has the longest road - after building latest road
@@ -295,7 +209,7 @@ class catanGame():
                     #TO-DO: Add option of AI Player playing a dev card prior to dice roll
                     
                     #Roll Dice and update player resources and dice stats
-                    pygame.event.pump()
+                    #pygame.event.pump()
                     diceNum = self.rollDice()
                     diceRolled = True
                     self.update_playerResources(diceNum, currPlayer)
@@ -307,8 +221,8 @@ class catanGame():
                     self.check_longest_road(currPlayer)
                     print("Player:{}, Resources:{}, Points: {}".format(currPlayer.name, currPlayer.resources, currPlayer.victoryPoints))
                     
-                    self.displayGameScreen()#Update back to original gamescreen
-                    pygame.time.delay(300)
+                    #self.boardView.displayGameScreen()#Update back to original gamescreen
+                    #pygame.time.delay(300)
                     turnOver = True
                     
                     #Check if game is over
@@ -319,7 +233,7 @@ class catanGame():
                         print("PLAYER {} WINS IN {} TURNS!".format(currPlayer.name, numTurns))
                         print(self.diceStats)
                         print("Exiting game in 10 seconds...")
-                        pygame.time.delay(30000)
+                        #pygame.time.delay(30000)
                         break
 
                 if(self.gameOver):
@@ -333,4 +247,4 @@ class catanGame():
                 
 
 #Initialize new game and run
-newGame = catanGame()
+newGame_AI = catanAIGame()
