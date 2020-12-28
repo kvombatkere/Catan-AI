@@ -136,7 +136,8 @@ class catanAIGame():
                 print('MaxRoadLength:{}, Longest Road:{}\n'.format(player_i.maxRoadLength, player_i.longestRoadFlag))
         
         else:
-            print("AI doesn't steal yet! :)")
+            print("AI using heuristic robber...")
+            currentPlayer.heuristic_move_robber(self.board)
 
 
     #function to check if a player has the longest road - after building latest road
@@ -233,18 +234,17 @@ class catanAIGame():
                         print("PLAYER {} WINS IN {} TURNS!".format(currPlayer.name, numTurns))
                         print(self.diceStats)
                         print("Exiting game in 10 seconds...")
-                        pygame.time.delay(30000)
+                        pygame.time.delay(10000)
                         break
 
                 if(self.gameOver):
                     startTime = pygame.time.get_ticks()
                     runTime = 0
-                    while(runTime < 10000): #10 second delay prior to quitting
+                    while(runTime < 5000): #5 second delay prior to quitting
                         runTime = pygame.time.get_ticks() - startTime
 
                     break
-                    
-                
+                                   
 
 #Initialize new game and run
 newGame_AI = catanAIGame()

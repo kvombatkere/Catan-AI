@@ -119,24 +119,25 @@ class heuristicAIPlayer(player):
         maxHexScore = 0 #Keep only the best hex to rob
         for hex_ind, hexTile in robberHexDict.items():
             #Extract all 6 vertices of this hexTile
-            vertexList = polygon_corners(self.flat, hexTile.hex)
+            vertexList = polygon_corners(board.flat, hexTile.hex)
 
             hexScore = 0 #Heuristic score for hexTile
             playerToRob_VP = 0
+            playerToRob = None
             for vertex in vertexList:
-                playerAtVertex = self.boardGraph[vertex].state['Player']
+                playerAtVertex = board.boardGraph[vertex].state['Player']
                 if playerAtVertex == self:
                     hexScore -= self.victoryPoints
                 elif playerAtVertex != None: #There is an adversary on this vertex
                     hexScore += playerAtVertex.visibleVictoryPoints
-                    #Find strongest other player at this hex
-                    if playerAtVertex.visibleVictoryPoints >= playerToRob_VP:
+                    #Find strongest other player at this hex, provided player has resources
+                    if playerAtVertex.visibleVictoryPoints >= playerToRob_VP and sum(playerAtVertex.resources.values()) > 0:
                         playerToRob_VP = playerAtVertex.visibleVictoryPoints
                         playerToRob = playerAtVertex
                 else:
                     pass
 
-            if hexScore >= maxHexScore:
+            if hexScore >= maxHexScore and playerToRob != None:
                 hexToRob_index = hex_ind
                 playerToRob_hex = playerToRob
                 maxHexScore = hexScore
@@ -153,7 +154,7 @@ class heuristicAIPlayer(player):
         hex_i, playerRobbed = self.choose_player_to_rob(board)
 
         #Move the robber
-        self.move_robber(hex_i, board, playerRobber)
+        self.move_robber(hex_i, board, playerRobbed)
 
         return
 
