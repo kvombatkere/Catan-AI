@@ -108,11 +108,55 @@ class heuristicAIPlayer(player):
     #Choose which player to rob
     def choose_player_to_rob(self, board):
         '''Heuristic function to choose the player with maximum points.
-        Choose hex with maximum other players
-        Avoid blocking own resource
+        Choose hex with maximum other players, Avoid blocking own resource
+        args: game board object
+        returns: hex index and player to rob
         '''
         #Get list of robber spots
         robberHexDict = board.get_robber_spots()
+        
+        #Choose a hexTile with maximum adversary settlements
+        maxHexScore = 0 #Keep only the best hex to rob
+        for hex_ind, hexTile in robberHexDict.items():
+            #Extract all 6 vertices of this hexTile
+            vertexList = polygon_corners(self.flat, hexTile.hex)
+
+            hexScore = 0 #Heuristic score for hexTile
+            playerToRob_VP = 0
+            for vertex in vertexList:
+                playerAtVertex = self.boardGraph[vertex].state['Player']
+                if playerAtVertex == self:
+                    hexScore -= self.victoryPoints
+                elif playerAtVertex != None: #There is an adversary on this vertex
+                    hexScore += playerAtVertex.visibleVictoryPoints
+                    #Find strongest other player at this hex
+                    if playerAtVertex.visibleVictoryPoints >= playerToRob_VP:
+                        playerToRob_VP = playerAtVertex.visibleVictoryPoints
+                        playerToRob = playerAtVertex
+                else:
+                    pass
+
+            if hexScore >= maxHexScore:
+                hexToRob_index = hex_ind
+                playerToRob_hex = playerToRob
+                maxHexScore = hexScore
+
+        return hexToRob_index, playerToRob_hex
+
+
+    def heuristic_move_robber(self, board):
+        '''Function to control heuristic AI robber
+        Calls the choose_player_to_rob and move_robber functions
+        args: board object
+        '''
+        #Get the best hex and player to rob
+        hex_i, playerRobbed = self.choose_player_to_rob(board)
+
+        #Move the robber
+        self.move_robber(hex_i, board, playerRobber)
+
+        return
+
 
 
 

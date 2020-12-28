@@ -38,7 +38,8 @@ class player():
         self.newDevCards = [] #List to keep the new dev cards draw - update the main list every turn
         self.devCards = {'KNIGHT':0, 'VP':0, 'MONOPOLY':0, 'ROADBUILDER':0, 'YEAROFPLENTY':0} 
         self.devCardPlayedThisTurn = False
-        #self.visibleVictoryPoints = self.victoryPoints - devCard victory points
+
+        self.visibleVictoryPoints = self.victoryPoints - self.devCards['VP']
 
 
     #function to build a road from vertex v1 to vertex v2
@@ -119,11 +120,13 @@ class player():
     
     #function to move robber to a specific hex and steal from a player
     def move_robber(self, hexIndex, board, player_robbed):
-        'Update boardGraph with Robber'
+        'Update boardGraph with Robber and steal resource'
         board.updateBoardGraph_robber(hexIndex)
         
         #Steal a random resource from other players
         self.steal_resource(player_robbed)
+
+        return
 
 
     #Function to steal a random resource from player_2
@@ -147,7 +150,9 @@ class player():
         player_2.resources[resourceStolen] -= 1
         self.resources[resourceStolen] += 1
         print("Stole 1 {} from Player {}".format(resourceStolen, player_2.name))
-        
+
+        return
+
         
     #Function to calculate road length for longest road calculation
     #Use both player buildgraph and board graph to compute recursively
@@ -262,6 +267,7 @@ class player():
                 self.victoryPoints += 1
                 board.devCardStack[cardDrawn] -= 1
                 self.devCards[cardDrawn] += 1
+                self.visibleVictoryPoints = self.victoryPoints - self.devCards['VP']
             
             else:#Update player dev card and the stack
                 self.newDevCards.append(cardDrawn)
