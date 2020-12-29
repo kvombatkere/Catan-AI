@@ -231,7 +231,7 @@ class catanAIGame():
                         self.gameOver = True
                         self.turnOver = True
                         print("====================================================")
-                        print("PLAYER {} WINS IN {} TURNS!".format(currPlayer.name, numTurns))
+                        print("PLAYER {} WINS IN {} TURNS!".format(currPlayer.name, int(numTurns/4)))
                         print(self.diceStats)
                         print("Exiting game in 10 seconds...")
                         pygame.time.delay(10000)

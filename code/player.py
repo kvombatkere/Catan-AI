@@ -324,7 +324,7 @@ class player():
 
         #Logic for each Dev Card
         if(devCardPlayed == 'KNIGHT'): 
-            game.moveRobber_display(self)
+            game.robber(self)
             self.knightsPlayed += 1 
 
         if(devCardPlayed == 'ROADBUILDER'):
