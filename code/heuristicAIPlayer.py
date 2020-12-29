@@ -13,6 +13,7 @@ class heuristicAIPlayer(player):
     def updateAI(self): 
         self.isAI = True
         self.setupResources = [] #List to keep track of setup resources
+        #Initialize resources with just correct number needed for set up
         self.resources = {'ORE':0, 'BRICK':4, 'WHEAT':2, 'WOOD':4, 'SHEEP':2} #Dictionary that keeps track of resource amounts
         print("Added new AI Player:", self.name)
 
@@ -187,7 +188,7 @@ class heuristicAIPlayer(player):
         resourcesNeededDict = {}
         for resourceName in self.resources.keys():
             if resourcesName != 'ORE' and self.resources[resourceName] == 0:
-                resourcesNeededDict[resourceName] = True
+                resourcesNeededDict[resourceName] = 1
 
         return resourcesNeededDict
 
