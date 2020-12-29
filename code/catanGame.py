@@ -188,7 +188,8 @@ class catanGame():
         #Logic for robber
         else:
             if(currentPlayer.isAI):
-                print("AI doesn't steal yet! :)")
+                print("AI using heuristic robber...")
+                currentPlayer.heuristic_move_robber(self.board)
             else:
                 self.robber(currentPlayer)
                 self.boardView.displayGameScreen()#Update back to original gamescreen
@@ -269,8 +270,9 @@ class catanGame():
                         self.update_playerResources(diceNum, currPlayer)
 
                         currPlayer.move(self.board) #AI Player makes all its moves
-                        #Check if AI player gets longest road and update Victory points
+                        #Check if AI player gets longest road/largest army and update Victory points
                         self.check_longest_road(currPlayer)
+                        self.check_largest_army(currPlayer)
                         print("Player:{}, Resources:{}, Points: {}".format(currPlayer.name, currPlayer.resources, currPlayer.victoryPoints))
                         
                         self.boardView.displayGameScreen()#Update back to original gamescreen
@@ -334,8 +336,10 @@ class catanGame():
                                 if(self.boardView.playDevCard_button.collidepoint(e.pos)):
                                         currPlayer.play_devCard(self)
                                         self.boardView.displayGameScreen()#Update back to original gamescreen
-                                        #Check for Largest Army 
+                                        
+                                        #Check for Largest Army and longest road
                                         self.check_largest_army(currPlayer)
+                                        self.check_longest_road(currPlayer)
                                         #Show updated points and resources  
                                         print("Player:{}, Resources:{}, Points: {}".format(currPlayer.name, currPlayer.resources, currPlayer.victoryPoints))
                                         print('Available Dev Cards:', currPlayer.devCards)

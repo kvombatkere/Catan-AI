@@ -173,10 +173,38 @@ class heuristicAIPlayer(player):
 
             if(len(devCardsAvailable) >=1):
                 #If a hexTile is currently blocked, try and play a Knight
-                
+
+                #If expansion needed, try road-builder
+
+                #If resources needed, try monopoly or year of plenty
 
 
+    def resources_needed_for_settlement(self):
+        '''Function to return the resources needed for a settlement
+        args: player object - use self.resources
+        returns: list of resources needed for a settlement
+        '''
+        resourcesNeededDict = {}
+        for resourceName in self.resources.keys():
+            if resourcesName != 'ORE' and self.resources[resourceName] == 0:
+                resourcesNeededDict[resourceName] = True
 
+        return resourcesNeededDict
+
+
+    def resources_needed_for_city(self):
+        '''Function to return the resources needed for a city
+        args: player object - use self.resources
+        returns: list of resources needed for a city
+        '''
+        resourcesNeededDict = {}
+        if self.resources['ORE'] < 3:
+            resourcesNeededDict['ORE'] = 3 - self.resources['ORE']
+
+        if self.resources['WHEAT'] < 2:
+            resourcesNeededDict['ORE'] = 2 - self.resources['WHEAT']
+
+        return resourcesNeededDict
     
     #Function to propose a trade -> give r1 and get r2
     #Propose a trade as a dictionary with {r1:amt_1, r2: amt_2} specifying the trade
