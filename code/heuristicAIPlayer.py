@@ -161,7 +161,7 @@ class heuristicAIPlayer(player):
 
 
     def heuristic_play_dev_card(self, board):
-        '''Heuristic function to choose and play a dev card
+        '''Heuristic strategies to choose and play a dev card
         args: board object
         '''
         #Check if player can play a devCard this turn
