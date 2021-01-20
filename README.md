@@ -2,7 +2,7 @@
 A Settlers of Catan framework built in Python with AI agents trained using Reinforcement Learning. The goal of this project is to implement full multiplayer game functionality and use MCTS and reinforcement learning to build an AI player that can effectively explore-exploit heuristic strategies.
 The GUI is implemented using ```pygame```, while the game log is currently output through the terminal to allow for easy play and testing.
 
-![Catan Board](https://github.com/kvombatkere/Catan-AI/blob/master/images/catan_gui.png)
+![Catan Board](/images/catan_gui.png)
 
 ## Framework Overview
 Game functionality is implemented in the following modules:
