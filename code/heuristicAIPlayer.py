@@ -160,19 +160,19 @@ class heuristicAIPlayer(player):
         return
 
 
-    def heuristic_play_dev_card(self, board):
-        '''Heuristic strategies to choose and play a dev card
-        args: board object
-        '''
-        #Check if player can play a devCard this turn
-        if self.devCardPlayedThisTurn != True:
-            #Get a list of all the unique dev cards this player can play
-            devCardsAvailable = []
-            for cardName, cardAmount in self.devCards.items():
-                if(cardName != 'VP' and cardAmount >= 1): #Exclude Victory points
-                    devCardsAvailable.append((cardName, cardAmount))
+    # def heuristic_play_dev_card(self, board):
+    #     '''Heuristic strategies to choose and play a dev card
+    #     args: board object
+    #     '''
+    #     #Check if player can play a devCard this turn
+    #     if self.devCardPlayedThisTurn != True:
+    #         #Get a list of all the unique dev cards this player can play
+    #         devCardsAvailable = []
+    #         for cardName, cardAmount in self.devCards.items():
+    #             if(cardName != 'VP' and cardAmount >= 1): #Exclude Victory points
+    #                 devCardsAvailable.append((cardName, cardAmount))
 
-            if(len(devCardsAvailable) >=1):
+    #         if(len(devCardsAvailable) >=1):
                 #If a hexTile is currently blocked, try and play a Knight
 
                 #If expansion needed, try road-builder

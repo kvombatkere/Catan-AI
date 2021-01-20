@@ -1,11 +1,11 @@
 #Karan Vombatkere
 #Settlers of Catan, 2020
 
-#Imports
+# #Imports
 from board import *
-from game import *
+from catanGame import *
 from player import *
-from AIPlayer import *
+from heuristicAIPlayer import *
 
 class modelState():
     '''Define the variables needed by the RL model using a state and action object
@@ -23,7 +23,15 @@ class modelState():
     Play Dev Card: Play a development card
     Trade: Trade with Bank (Port option included) or with other players
     '''
-    __init__(self):
-        self.boardState = []
+    def __init__(self, catan_game):
+        
+        self.vertexState = [0]*54
+        self.edgeState = [0]
+
         self.actionList = []
 
+        print("Array length", len(self.vertexState))
+
+
+
+a = modelState()
