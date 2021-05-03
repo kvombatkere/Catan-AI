@@ -22,14 +22,24 @@ class catanBoard(hexTile, Vertex):
         self.hexTileDict = {} #Dict to store all hextiles, with hexIndex as key
         self.vertex_index_to_pixel_dict = {} #Dict to store the Vertices coordinates with vertex indices as keys
         self.boardGraph = {} #Dict to store the vertex objects with the pixelCoordinates as keys
-        self.resourcesList = self.getRandomResourceList()
 
         self.edgeLength = 80 #Specify for hex size
         self.size = self.width, self.height = 1000, 800
         self.flat = Layout(layout_flat, Point(self.edgeLength, self.edgeLength), Point(self.width/2, self.height/2)) #specify Layout
 
+        ##INITIALIZE BOARD##
+        self.resourcesList = self.getRandomResourceList() #Assign resources numbers randomly
+
         #Get a random permutation of indices 0-18 to use with the resource list
         randomIndices = np.random.permutation([i for i in range(len(self.resourcesList))])
+        
+        reinitializeCount = 0
+        #Initialize a valid resource list that does not allow adjacent 6's and 8's
+        while(checkHexNeighbors(randomIndices) == False):
+            reinitializeCount += 1
+            randomIndices = np.random.permutation([i for i in range(len(self.resourcesList))])
+
+        print("Re-initialized board {} times".format(reinitializeCount))
         
         hexIndex_i = 0 #initialize hexIndex at 0
         #Neighbors are specified in adjacency matrix - hard coded
@@ -86,6 +96,25 @@ class catanBoard(hexTile, Vertex):
                 resourceList.append(Resource(r, None))
 
         return resourceList
+
+    #Function to check neighboring hexTiles
+    #Takes a list of rnadom indices as an input, and the resource list
+    def checkHexNeighbors(self, randomIndices):
+        #store a list of neighbors as per the axial coordinate -> numeric indexing system
+        hexNeighborIndexList = {0: [1,2,3,4,5,6], 1: [0,2,6,7,8,18], 2: [0,1,3,8,9,10],
+                                   3: [0,2,4,10,11,12], 4: [0,3,5,12,13,14], 5: [0,4,6,14,15,16],
+                                   6: [0,1,5,16,17,18], 7: [1,8,18], 8: [1,2,7,9],
+                                   9: [2,8,10], 10: [2,3,9,11], 11: [3,10,12],
+                                   12: [3,4,11,13], 13: [4,12,14], 14: [4,5,13,15],
+                                   15: [5,14,16], 16: [5,6,15,17], 17: [6,16,18], 18: [1,6,7,17]}
+
+        #Check each random index for its resource roll value
+        for pos, random_Index in enumerate(randomIndices):
+            rollValueOnHex = self.resourcesList[random_Index].num
+
+            #Check each neighbor in the position
+            for neighbor_index in hexNeighborIndexList[pos]:
+                
 
 
     #Function to generate the entire board graph
