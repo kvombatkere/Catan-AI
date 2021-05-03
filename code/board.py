@@ -35,7 +35,7 @@ class catanBoard(hexTile, Vertex):
         
         reinitializeCount = 0
         #Initialize a valid resource list that does not allow adjacent 6's and 8's
-        while(checkHexNeighbors(randomIndices) == False):
+        while(self.checkHexNeighbors(randomIndices) == False):
             reinitializeCount += 1
             randomIndices = np.random.permutation([i for i in range(len(self.resourcesList))])
 
@@ -114,7 +114,12 @@ class catanBoard(hexTile, Vertex):
 
             #Check each neighbor in the position
             for neighbor_index in hexNeighborIndexList[pos]:
-                
+                rollValueOnNeighbor = self.resourcesList[randomIndices[neighbor_index]].num
+                if rollValueOnHex in [6,8] and rollValueOnNeighbor in [6,8]:
+                    return False
+
+        #Return true if it passes for all hexes
+        return True
 
 
     #Function to generate the entire board graph
