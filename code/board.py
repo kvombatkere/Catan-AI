@@ -28,6 +28,7 @@ class catanBoard(hexTile, Vertex):
         self.flat = Layout(layout_flat, Point(self.edgeLength, self.edgeLength), Point(self.width/2, self.height/2)) #specify Layout
 
         ##INITIALIZE BOARD##
+        print("Initializing Catan Game Board...")
         self.resourcesList = self.getRandomResourceList() #Assign resources numbers randomly
 
         #Get a random permutation of indices 0-18 to use with the resource list
@@ -39,12 +40,11 @@ class catanBoard(hexTile, Vertex):
             reinitializeCount += 1
             randomIndices = np.random.permutation([i for i in range(len(self.resourcesList))])
 
-        print("Re-initialized board {} times".format(reinitializeCount))
+        print("Re-initialized random board {} times".format(reinitializeCount))
         
         hexIndex_i = 0 #initialize hexIndex at 0
         #Neighbors are specified in adjacency matrix - hard coded
         
-        print("Initializing Game Board...")
         #Generate the hexes and the graphs with the Index, Centers and Resources defined
         for rand_i in randomIndices:
             #Get the coordinates of the new hex, indexed by hexIndex_i
@@ -108,17 +108,17 @@ class catanBoard(hexTile, Vertex):
                                    12: [3,4,11,13], 13: [4,12,14], 14: [4,5,13,15],
                                    15: [5,14,16], 16: [5,6,15,17], 17: [6,16,18], 18: [1,6,7,17]}
 
-        #Check each random index for its resource roll value
+        #Check each position, random index pair for its resource roll value
         for pos, random_Index in enumerate(randomIndices):
             rollValueOnHex = self.resourcesList[random_Index].num
 
-            #Check each neighbor in the position
+            #Check each neighbor in the position and check if number is legal
             for neighbor_index in hexNeighborIndexList[pos]:
                 rollValueOnNeighbor = self.resourcesList[randomIndices[neighbor_index]].num
                 if rollValueOnHex in [6,8] and rollValueOnNeighbor in [6,8]:
                     return False
 
-        #Return true if it passes for all hexes
+        #Return true if it legal for all hexes
         return True
 
 
