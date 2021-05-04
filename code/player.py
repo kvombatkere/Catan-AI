@@ -435,14 +435,15 @@ class player():
 
         elif trade_type == 'PLAYER':
             #Select player to trade with - generate list of other players
-            otherPlayerNames = [p.name if p.name != self.name else None for p in list(game.playerQueue.queue)]
+            otherPlayerNames = [p.name for p in list(game.playerQueue.queue)]
 
             print("\nInter-Player Trading Menu - Player Names:", otherPlayerNames)
             print("Resource Numbers:", resource_dict)
 
-            playerToTrade_name = None
-            while (playerToTrade_name not in otherPlayerNames):
-                playerToTrade_name = int(input("Enter name of player to trade with:"))
+            #Disallow trading with self
+            playerToTrade_name = ''
+            while (playerToTrade_name not in otherPlayerNames and playerToTrade_name != self.name):
+                playerToTrade_name = str(input("Enter name of another player to trade with:"))
 
             #Over write and store the target player object
             playerToTrade = None
@@ -452,8 +453,12 @@ class player():
             
             #Select resource to trade - must have at least one of that resource to trade
             resourceToTradeNum = -1
-            while (resourceToTradeNum not in resource_dict.keys() and self.resources[resource_dict[resourceToTradeNum]] > 0):
+            while (resourceToTradeNum not in resource_dict.keys()):
                 resourceToTradeNum = int(input("Enter resource number to trade with player {}:".format(playerToTrade_name)))
+                #Reset if invalid resource is chosen
+                if self.resources[resource_dict[resourceToTradeNum]] == 0:
+                    resourceToTradeNum = -1
+                    print("Players can only trade resources they already have")
 
             resource_traded = resource_dict[resourceToTradeNum]
 
