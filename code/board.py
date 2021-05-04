@@ -173,13 +173,13 @@ class catanBoard(hexTile, Vertex):
     def updatePorts(self):
         #list of vertex indices of all port pairs
         port_pair_list = [[43,44], [33,34], [45,49], [27,53], [24,29], [30,31], [36,39], [41,42], [51,52]]
-        #Use this dictionary to map vertex indices to specific ports as per the game board - can add randomization later
 
         #Get a random permutation of indices of ports
         randomPortIndices = np.random.permutation([i for i in range(len(port_pair_list))])
         randomPortIndex_counter = 0
 
         #Initialize port dictionary with counts
+        #Also use this dictionary to map vertex indices to specific ports as per the game board 
         port_dict = {'2:1 BRICK':1, '2:1 SHEEP':1, '2:1 WOOD':1, '2:1 WHEAT':1, '2:1 ORE':1, '3:1 PORT':4}
 
         #Assign random port vertex pairs for each port type
