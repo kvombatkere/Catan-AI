@@ -526,6 +526,7 @@ class player():
 
                 #Discard that resource
                 self.resources[resourceToDiscard] -= 1
+                print("Player {} discarded a {}. Still needs to discard {} more cards".format(self.name, resourceToDiscard, numCardsToDiscard-i))
 
 
         else:
