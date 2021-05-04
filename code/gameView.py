@@ -54,9 +54,11 @@ class catanGameView():
                 #print("Displaying {} port with coordinates x ={} and y={}".format(vertexInfo.port, vCoord.x, vCoord.y))
 
                 if(vCoord.x < 430 and vCoord.y > 130):
-                    self.screen.blit(portText, (vCoord.x - 40, vCoord.y))
-                elif(vCoord.y < 130):
-                    self.screen.blit(portText, (vCoord.x - 40, vCoord.y-10))
+                    self.screen.blit(portText, (vCoord.x-50, vCoord.y))
+                elif(vCoord.x > 430 and vCoord.y < 130):
+                    self.screen.blit(portText, (vCoord.x, vCoord.y-15))
+                elif(vCoord.x < 430 and vCoord.y < 130):
+                    self.screen.blit(portText, (vCoord.x-50, vCoord.y-15))
                 else:
                     self.screen.blit(portText, (vCoord.x, vCoord.y)) 
             
