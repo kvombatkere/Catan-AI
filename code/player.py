@@ -458,7 +458,7 @@ class player():
             while (resourceToTrade not in self.resources.keys()):
                 resourceToTrade = input("Enter resource name to trade with player {}:".format(playerToTrade_name)).upper()
                 #Reset if invalid resource is chosen
-                if self.resources[resourceToTrade] == 0:
+                if resourceToTrade in self.resources.keys() and self.resources[resourceToTrade] == 0:
                     resourceToTrade = ""
                     print("Players can only trade resources they already have")
 
@@ -472,7 +472,7 @@ class player():
             while (resourceToReceive not in self.resources.keys()) or (resourceToReceive == resourceToTrade):
                 resourceToReceive = input("Enter resource name to receive from player {}:".format(playerToTrade_name)).upper()
                 #Reset if invalid resource is chosen
-                if playerToTrade.resources[resourceToReceive] == 0:
+                if resourceToReceive in self.resources.keys() and playerToTrade.resources[resourceToReceive] == 0:
                     resourceToReceive = -""
                     print("Player {} doesn't have any {} to trade".format(playerToTrade_name, resourceToReceive))
 
@@ -522,7 +522,7 @@ class player():
                 
                 resourceToDiscard = ''
                 while (resourceToDiscard not in self.resources.keys()) or (self.resources[resourceToDiscard] == 0):
-                    resourceToDiscard = input("Enter resource to discard: ")
+                    resourceToDiscard = input("Enter resource to discard: ").upper()
 
                 #Discard that resource
                 self.resources[resourceToDiscard] -= 1
