@@ -206,7 +206,7 @@ class catanGameView():
         for roadEdge in roadsPossibleDict.keys():
             if roadsPossibleDict[roadEdge]:
                 roadsPossibleDict[roadEdge] = self.draw_possible_road(roadEdge, currentPlayer.color)
-                print("displaying road")
+                #print("displaying road")
 
         pygame.display.update()
 
