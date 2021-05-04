@@ -172,7 +172,7 @@ class catanBoard(hexTile, Vertex):
     #Update Board vertices with Port info
     def updatePorts(self):
         #Use this dictionary to map vertex indices to specific ports as per the game board - can add randomization later
-        port_dict = {'2:1 BRICK':[43,44], '2:1 SHEEP':[33,34], '2:1 WOOD':[45,49], '2:1 WHEAT':[27,53], '2:1 ORE':[24,29], '3:1 ?':[30,31,36,39,41,42,51,52]}
+        port_dict = {'2:1 BRICK':[43,44], '2:1 SHEEP':[33,34], '2:1 WOOD':[45,49], '2:1 WHEAT':[27,53], '2:1 ORE':[24,29], '3:1 PORT':[30,31,36,39,41,42,51,52]}
         
         #Iterate thru each port and update vertex info
         for portType, portVertexIndex_list in port_dict.items():

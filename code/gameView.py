@@ -18,7 +18,7 @@ class catanGameView():
         self.screen = pygame.display.set_mode(self.board.size)
         pygame.display.set_caption('Settlers of Catan')
         self.font_resource = pygame.font.SysFont('cambria', 15)
-        self.font_ports = pygame.font.SysFont('cambria', 12)
+        self.font_ports = pygame.font.SysFont('cambria', 10)
 
         self.font_button = pygame.font.SysFont('cambria', 12)
         self.font_diceRoll = pygame.font.SysFont('cambria', 25) #dice font
@@ -47,10 +47,10 @@ class catanGameView():
                 self.screen.blit(resourceText, (hexTile.pixelCenter.x -25, hexTile.pixelCenter.y)) #add text to hex
 
 
-        #Display the Ports
+        #Display the Ports - update images/formatting later
         for vCoord, vertexInfo in self.board.boardGraph.items():
             if(vertexInfo.port != False):
-                portText = self.font_ports.render(vertexInfo.port, False, (220,0,0))
+                portText = self.font_ports.render(vertexInfo.port, False, (0,0,0))
                 self.screen.blit(portText, (vCoord.x, vCoord.y)) 
             
         pygame.display.update()
