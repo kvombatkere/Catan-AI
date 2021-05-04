@@ -344,6 +344,14 @@ class catanGame():
                                         print("Player:{}, Resources:{}, Points: {}".format(currPlayer.name, currPlayer.resources, currPlayer.victoryPoints))
                                         print('Available Dev Cards:', currPlayer.devCards)
 
+                                #Check if player wants to trade with the bank
+                                if(self.boardView.tradeBank_button.collidepoint(e.pos)):
+                                        currPlayer.initiate_trade('BANK')
+                                
+                                #Check if player wants to trade with the bank
+                                if(self.boardView.tradePlayers_button.collidepoint(e.pos)):
+                                        currPlayer.initiate_trade('PLAYER')
+
                                 #Check if player wants to end turn
                                 if(self.boardView.endTurn_button.collidepoint(e.pos)):
                                     if(diceRolled == True): #Can only end turn after rolling dice

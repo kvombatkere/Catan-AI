@@ -372,26 +372,62 @@ class player():
 
     #Function to basic trade 4:1 with bank, or use ports to trade
     def trade_with_bank(self, r1, r2):
+        '''Function to implement trading with bank
+        r1: resource player wants to trade away
+        r2: resource player wants to receive
+        Automatically give player the best available trade ratio
+        '''
         if(r1 in self.portList and self.resources[r1] >= 2): #Can use 2:1 port with r1
             self.resources[r1] -= 2
             self.resources[r2] += 1
             print("Traded 2 {} for 1 {} using {} Port".format(r1, r2, r1))
+            return
 
         #Check for 3:1 Port
         elif('3:1' in self.portList and self.resources[r1] >= 3):
             self.resources[r1] -= 3
             self.resources[r2] += 1
             print("Traded 3 {} for 1 {} using 3:1 Port".format(r1, r2))
+            return
 
         #Check 4:1 port
         elif(self.resources[r1] >= 4):
             self.resources[r1] -= 4
             self.resources[r2] += 1
             print("Traded 4 {} for 1 {}".format(r1, r2))
+            return
         
         else:
             print("Insufficient resource {} to trade with Bank".format(r1))
+            return
 
-    #function to initate a trade - with bank or other players
-    def initiate_trade():
+
+    #Function to initate a trade - with bank or other players
+    def initiate_trade(self, trade_type):
+        '''Wrapper function to initiate a trade with bank or other players
+        trade_type: flag to determine the trade
+        '''
+        #Dictionary to show the resource and trade options
+        resource_dict = {1:'BRICK', 2:'WOOD', 3:'WHEAT', 4:'SHEEP', 5:'ORE'}
+        print("\n#### Trading Menu by Resource Number ####", resource_dict)
+        
+        if trade_type == 'BANK':
+            #Player to select resource to trade
+            resourceToTradeNum = -1
+            while (resourceToTradeNum not in resource_dict.keys()):
+                resourceToTradeNum = int(input("Enter resource number to trade with bank:"))
+
+            resource_traded = resource_dict[resourceToTradeNum]
+
+            #Player to select resource to trade - disallow receiving same resource as traded
+            resourceToReceiveNum = -1
+            while (resourceToReceiveNum not in resource_dict.keys() and resourceToReceiveNum != resourceToTradeNum):
+                resourceToReceiveNum = int(input("Enter resource number to receive from bank:"))
+
+            resource_received = resource_dict[resourceToReceiveNum]
+
+            #Try and trade with Bank - Error handling handled in trade function
+            self.trade_with_bank(resource_traded, resource_received)
+
+
         return None
