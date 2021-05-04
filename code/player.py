@@ -423,7 +423,7 @@ class player():
 
             #Player to select resource to receive - disallow receiving same resource as traded
             resourceToReceiveNum = -1
-            while (resourceToReceiveNum not in resource_dict.keys() and resourceToReceiveNum != resourceToTradeNum):
+            while (resourceToReceiveNum not in resource_dict.keys()) or (resourceToReceiveNum == resourceToTradeNum):
                 resourceToReceiveNum = int(input("Enter resource number to receive from bank:"))
 
             resource_received = resource_dict[resourceToReceiveNum]

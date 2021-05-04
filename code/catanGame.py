@@ -347,10 +347,14 @@ class catanGame():
                                 #Check if player wants to trade with the bank
                                 if(self.boardView.tradeBank_button.collidepoint(e.pos)):
                                         currPlayer.initiate_trade(self, 'BANK')
+                                        #Show updated points and resources  
+                                        print("Player:{}, Resources:{}, Points: {}".format(currPlayer.name, currPlayer.resources, currPlayer.victoryPoints))
                                 
                                 #Check if player wants to trade with another player
                                 if(self.boardView.tradePlayers_button.collidepoint(e.pos)):
                                         currPlayer.initiate_trade(self, 'PLAYER')
+                                        #Show updated points and resources  
+                                        print("Player:{}, Resources:{}, Points: {}".format(currPlayer.name, currPlayer.resources, currPlayer.victoryPoints))
 
                                 #Check if player wants to end turn
                                 if(self.boardView.endTurn_button.collidepoint(e.pos)):
