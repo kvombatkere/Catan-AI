@@ -51,8 +51,14 @@ class catanGameView():
         for vCoord, vertexInfo in self.board.boardGraph.items():
             if(vertexInfo.port != False):
                 portText = self.font_ports.render(vertexInfo.port, False, (0,0,0))
-                print("Displaying {} port with coordinates x ={} and y={}".format(vertexInfo.port, vCoord.x, vCoord.y))
-                self.screen.blit(portText, (vCoord.x, vCoord.y)) 
+                #print("Displaying {} port with coordinates x ={} and y={}".format(vertexInfo.port, vCoord.x, vCoord.y))
+
+                if(vCoord.x < 430 and vCoord.y > 130):
+                    self.screen.blit(portText, (vCoord.x - 40, vCoord.y))
+                elif(vCoord.y < 130):
+                    self.screen.blit(portText, (vCoord.x - 40, vCoord.y-10))
+                else:
+                    self.screen.blit(portText, (vCoord.x, vCoord.y)) 
             
         pygame.display.update()
 
