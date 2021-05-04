@@ -171,9 +171,26 @@ class catanBoard(hexTile, Vertex):
 
     #Update Board vertices with Port info
     def updatePorts(self):
+        #list of vertex indices of all port pairs
+        port_pair_list = [[43,44], [33,34], [45,49], [27,53], [24,29], [30,31], [36,39], [41,42], [51,52]]
         #Use this dictionary to map vertex indices to specific ports as per the game board - can add randomization later
-        port_dict = {'2:1 BRICK':[43,44], '2:1 SHEEP':[33,34], '2:1 WOOD':[45,49], '2:1 WHEAT':[27,53], '2:1 ORE':[24,29], '3:1 PORT':[30,31,36,39,41,42,51,52]}
-        
+
+        #Get a random permutation of indices of ports
+        randomPortIndices = np.random.permutation([i for i in range(len(port_pair_list))])
+        randomPortIndex_counter = 0
+
+        #Initialize port dictionary with counts
+        port_dict = {'2:1 BRICK':1, '2:1 SHEEP':1, '2:1 WOOD':1, '2:1 WHEAT':1, '2:1 ORE':1, '3:1 PORT':4}
+
+        #Assign random port vertex pairs for each port type
+        for portType, portVertexPair_count in port_dict.items():
+            portVertices = []
+            for i in range(portVertexPair_count): #Number of ports to assign
+                portVertices += port_pair_list[randomPortIndices[randomPortIndex_counter]] #Add randomized port
+                randomPortIndex_counter += 1
+
+            port_dict[portType] = portVertices
+
         #Iterate thru each port and update vertex info
         for portType, portVertexIndex_list in port_dict.items():
             for v_index in portVertexIndex_list: #Each vertex

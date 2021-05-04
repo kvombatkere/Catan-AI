@@ -51,6 +51,7 @@ class catanGameView():
         for vCoord, vertexInfo in self.board.boardGraph.items():
             if(vertexInfo.port != False):
                 portText = self.font_ports.render(vertexInfo.port, False, (0,0,0))
+                print("Displaying {} port with coordinates x ={} and y={}".format(vertexInfo.port, vCoord.x, vCoord.y))
                 self.screen.blit(portText, (vCoord.x, vCoord.y)) 
             
         pygame.display.update()
