@@ -148,7 +148,7 @@ class catanGame():
     def rollDice(self):
         dice_1 = np.random.randint(1,7)
         dice_2 = np.random.randint(1,7)
-        diceRoll = 7 #dice_1 + dice_2
+        diceRoll = dice_1 + dice_2
         print("Dice Roll = ", diceRoll, "{", dice_1, dice_2, "}")
 
         self.boardView.displayDiceRoll(diceRoll)
