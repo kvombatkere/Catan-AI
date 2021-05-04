@@ -498,9 +498,42 @@ class player():
             print("Player {} successfully traded {} {} for {} {} with player {}".format(self.name, resource_traded_amount, resource_traded,
                                                                                         resource_received_amount, resource_received, playerToTrade_name))
 
-            return
-
+            return 
 
         else:
             print("Illegal trade_type flag")
             return
+
+
+    #Function to discard cards
+    def discardResources(self):
+        '''Function to enable a player to select cards to discard when a 7 is rolled
+        '''
+        maxCards = 7 #Default is 7, but can be changed for testing
+
+        #Calculate resources to discard
+        totalResourceCount = 0
+        for resource, amount in self.resources.items():
+            totalResourceCount += amount
+
+        #Logic to calculate number of cards to discard and allow player to select
+        if totalResourceCount > maxCards:
+            numCardsToDiscard = int(totalResourceCount/2)
+            print("Player {} has {} cards and MUST choose {} cards to discard...".format(self.name, totalResourceCount, numCardsToDiscard))
+            
+            #Loop to allow player to discard cards
+            for i in range(numCardsToDiscard):
+                print("Player {} current resources to choose from:", self.resources)
+                
+                resourceToDiscard = ''
+                while (resourceToDiscard not in self.resources.keys()) or (self.resources[resourceToDiscard] == 0):
+                    resourceToDiscard = input("Enter resource to discard: ")
+
+                #Discard that resource
+                self.resources[resourceToDiscard] -= 1
+
+
+        else:
+            print("Player {} has {} cards and does not need to discard any cards!".format(self.name, totalResourceCount))
+            return
+

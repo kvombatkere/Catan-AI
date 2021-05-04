@@ -185,8 +185,19 @@ class catanGame():
                 #print("RoadsLeft:{}, SettlementsLeft:{}, CitiesLeft:{}".format(player_i.roadsLeft, player_i.settlementsLeft, player_i.citiesLeft))
                 print('MaxRoadLength:{}, LongestRoad:{}\n'.format(player_i.maxRoadLength, player_i.longestRoadFlag))
         
-        #Logic for robber
+        #Logic for a 7 roll
         else:
+            #Implement discarding cards
+            #Check for each player
+            for player_i in list(self.playerQueue.queue):
+                if(currentPlayer.isAI):
+                    print("AI discarding resources...")
+                    #TO-DO
+                else:
+                    #Player must discard resources
+                    player_i.discardResources()
+
+            #Logic for robber
             if(currentPlayer.isAI):
                 print("AI using heuristic robber...")
                 currentPlayer.heuristic_move_robber(self.board)
