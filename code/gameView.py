@@ -122,6 +122,8 @@ class catanGameView():
         endTurnText = self.font_button.render("END TURN", False, (0,0,0))
         devCardText = self.font_button.render("DEV CARD", False, (0,0,0))
         playDevCardText = self.font_button.render("PLAY DEV CARD", False, (0,0,0))
+        tradeBankText = self.font_button.render("TRADE W/ BANK", False, (0,0,0))
+        tradePlayersText = self.font_button.render("TRADE W/ PLAYER", False, (0,0,0))
 
         self.rollDice_button = pygame.Rect(20, 10, 80, 40)
         self.buildRoad_button = pygame.Rect(20, 70, 80, 40)
@@ -129,14 +131,20 @@ class catanGameView():
         self.buildCity_button = pygame.Rect(20, 170, 80, 40)
         self.devCard_button = pygame.Rect(20, 220, 80, 40)
         self.playDevCard_button = pygame.Rect(20, 270, 80, 40)
-        self.endTurn_button = pygame.Rect(20, 330, 80, 40)
+        self.tradeBank_button = pygame.Rect(20, 370, 80, 40)
+        self.tradePlayers_button = pygame.Rect(20, 420, 80, 40)
+
+        self.endTurn_button = pygame.Rect(20, 500, 80, 40)
 
         pygame.draw.rect(self.screen, pygame.Color('darkgreen'), self.rollDice_button) 
         pygame.draw.rect(self.screen, pygame.Color('gray33'), self.buildRoad_button) 
         pygame.draw.rect(self.screen, pygame.Color('gray33'), self.buildSettlement_button) 
         pygame.draw.rect(self.screen, pygame.Color('gray33'), self.buildCity_button)
         pygame.draw.rect(self.screen, pygame.Color('gray33'), self.devCard_button)
-        pygame.draw.rect(self.screen, pygame.Color('gray33'), self.playDevCard_button) 
+        pygame.draw.rect(self.screen, pygame.Color('gray33'), self.playDevCard_button)
+        pygame.draw.rect(self.screen, pygame.Color('magenta'), self.tradeBank_button)
+        pygame.draw.rect(self.screen, pygame.Color('magenta'), self.tradePlayers_button)
+
         pygame.draw.rect(self.screen, pygame.Color('burlywood'), self.endTurn_button) 
 
         self.screen.blit(diceRollText,(30, 20)) 
@@ -145,7 +153,10 @@ class catanGameView():
         self.screen.blit(buildCityText, (30,180))
         self.screen.blit(devCardText, (30,230))
         self.screen.blit(playDevCardText, (30,280))
-        self.screen.blit(endTurnText,(30,340))
+        self.screen.blit(tradeBankText, (30,380))
+        self.screen.blit(tradePlayersText, (30,430))
+
+        self.screen.blit(endTurnText,(30,510))
 
 
 
