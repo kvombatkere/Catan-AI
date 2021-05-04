@@ -63,6 +63,9 @@ class player():
 
                 print('{} Built a Road. MaxRoadLength: {}'.format(self.name, self.maxRoadLength))
 
+            else:
+                print("No roads available to build")
+
         else:
             print("Insufficient Resources to Build Road - Need 1 BRICK, 1 WOOD")
 
@@ -94,6 +97,9 @@ class player():
                 if((board.boardGraph[vCoord].port != False) and (board.boardGraph[vCoord].port not in self.portList)):
                     self.portList.append(board.boardGraph[vCoord].port)
                     print("{} now has {} Port access".format(self.name, board.boardGraph[vCoord].port))
+
+            else:
+                print("No settlements available to build")
   
         else:
             print("Insufficient Resources to Build Settlement. Build Cost: 1 BRICK, 1 WOOD, 1 WHEAT, 1 SHEEP")
@@ -114,6 +120,9 @@ class player():
 
                 board.updateBoardGraph_city(vCoord, self) #update the overall boardGraph
                 print('{} Built a City'.format(self.name))
+
+            else:
+                print("No cities available to build")
 
         else:
             print("Insufficient Resources to Build City. Build Cost: 3 ORE, 2 WHEAT")
