@@ -377,14 +377,16 @@ class player():
         r2: resource player wants to receive
         Automatically give player the best available trade ratio
         '''
-        if(r1 in self.portList and self.resources[r1] >= 2): #Can use 2:1 port with r1
+        #Get r1 port string
+        r1_port = "2:1 " + r1
+        if(r1_port in self.portList and self.resources[r1] >= 2): #Can use 2:1 port with r1
             self.resources[r1] -= 2
             self.resources[r2] += 1
             print("Traded 2 {} for 1 {} using {} Port".format(r1, r2, r1))
             return
 
         #Check for 3:1 Port
-        elif('3:1' in self.portList and self.resources[r1] >= 3):
+        elif('3:1 PORT' in self.portList and self.resources[r1] >= 3):
             self.resources[r1] -= 3
             self.resources[r2] += 1
             print("Traded 3 {} for 1 {} using 3:1 Port".format(r1, r2))
