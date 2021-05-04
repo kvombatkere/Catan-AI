@@ -403,15 +403,17 @@ class player():
 
 
     #Function to initate a trade - with bank or other players
-    def initiate_trade(self, trade_type):
+    def initiate_trade(self, game, trade_type):
         '''Wrapper function to initiate a trade with bank or other players
         trade_type: flag to determine the trade
         '''
         #Dictionary to show the resource and trade options
         resource_dict = {1:'BRICK', 2:'WOOD', 3:'WHEAT', 4:'SHEEP', 5:'ORE'}
-        print("\n#### Trading Menu by Resource Number ####", resource_dict)
+        
         
         if trade_type == 'BANK':
+            print("\nBank Trading Menu - Resource Numbers:", resource_dict) #display resources and numbers
+
             #Player to select resource to trade
             resourceToTradeNum = -1
             while (resourceToTradeNum not in resource_dict.keys()):
@@ -419,7 +421,7 @@ class player():
 
             resource_traded = resource_dict[resourceToTradeNum]
 
-            #Player to select resource to trade - disallow receiving same resource as traded
+            #Player to select resource to receive - disallow receiving same resource as traded
             resourceToReceiveNum = -1
             while (resourceToReceiveNum not in resource_dict.keys() and resourceToReceiveNum != resourceToTradeNum):
                 resourceToReceiveNum = int(input("Enter resource number to receive from bank:"))
@@ -427,7 +429,67 @@ class player():
             resource_received = resource_dict[resourceToReceiveNum]
 
             #Try and trade with Bank - Error handling handled in trade function
-            self.trade_with_bank(resource_traded, resource_received)
+            self.trade_with_bank(resource_traded, resource_received) 
+            return
 
 
-        return None
+        elif trade_type == 'PLAYER':
+            #Select player to trade with - generate list of other players
+            otherPlayerNames = [p.name if p.name != self.name else None for p in list(game.playerQueue.queue)]
+
+            print("\nInter-Player Trading Menu - Player Names:", otherPlayerNames)
+            print("Resource Numbers:", resource_dict)
+
+            playerToTrade_name = None
+            while (playerToTrade_name not in otherPlayerNames):
+                playerToTrade_name = int(input("Enter name of player to trade with:"))
+
+            #Over write and store the target player object
+            playerToTrade = None
+            for player in list(game.playerQueue.queue):
+                if player.name == playerToTrade_name:
+                    playerToTrade = player
+            
+            #Select resource to trade - must have at least one of that resource to trade
+            resourceToTradeNum = -1
+            while (resourceToTradeNum not in resource_dict.keys() and self.resources[resource_dict[resourceToTradeNum]] > 0):
+                resourceToTradeNum = int(input("Enter resource number to trade with player {}:".format(playerToTrade_name)))
+
+            resource_traded = resource_dict[resourceToTradeNum]
+
+            #Specify quantity to trade
+            resource_traded_amount = -1
+            while (0 < resource_traded_amount <= self.resources[resource_traded]):
+                resource_traded_amount = int(input("Enter quantity of {} to trade with player {}:".format(resource_traded, playerToTrade_name)))
+
+
+            #Player to select resource to receive - disallow receiving same resource as traded
+            resourceToReceiveNum = -1
+            while (resourceToReceiveNum not in resource_dict.keys() and resourceToReceiveNum != resourceToTradeNum):
+                resourceToReceiveNum = int(input("Enter resource number to receive from player {}:".format(playerToTrade_name)))
+
+            resource_received = resource_dict[resourceToReceiveNum]
+
+            #Specify quantity to receive
+            resource_received_amount = -1
+            while (0 < resource_received_amount <= playerToTrade.resources[resource_received]):
+                resource_received_amount = int(input("Enter quantity of {} to receive from player {}:".format(resource_received, playerToTrade_name)))
+
+
+            #Execute trade - player gives resource traded and gains resource received
+            self.resources[resource_received] += resource_received_amount
+            self.resources[resource_traded] -= resource_traded_amount
+
+            #Other player gains resource traded and gives resource received
+            playerToTrade.resources[resource_received] -= resource_received_amount
+            playerToTrade.resources[resource_traded] += resource_traded_amount
+
+            print("Player {} successfully traded {} {} for {} {} with player {}".format(self.name, resource_traded_amount, resource_traded,
+                                                                                        resource_received_amount, resource_received, playerToTrade_name))
+
+            return
+
+
+        else:
+            print("Illegal trade_type flag")
+            return
