@@ -514,7 +514,7 @@ class player():
         #Logic to calculate number of cards to discard and allow player to select
         if totalResourceCount > maxCards:
             numCardsToDiscard = int(totalResourceCount/2)
-            print("Player {} has {} cards and MUST choose {} cards to discard...".format(self.name, totalResourceCount, numCardsToDiscard))
+            print("\nPlayer {} has {} cards and MUST choose {} cards to discard...".format(self.name, totalResourceCount, numCardsToDiscard))
             
             #Loop to allow player to discard cards
             for i in range(numCardsToDiscard):
@@ -526,10 +526,10 @@ class player():
 
                 #Discard that resource
                 self.resources[resourceToDiscard] -= 1
-                print("Player {} discarded a {}. Still needs to discard {} more cards".format(self.name, resourceToDiscard, numCardsToDiscard-i))
+                print("Player {} discarded a {}, and needs to discard {} more cards".format(self.name, resourceToDiscard, (numCardsToDiscard-1-i)))
 
 
         else:
-            print("Player {} has {} cards and does not need to discard any cards!".format(self.name, totalResourceCount))
+            print("\nPlayer {} has {} cards and does not need to discard any cards!".format(self.name, totalResourceCount))
             return
 

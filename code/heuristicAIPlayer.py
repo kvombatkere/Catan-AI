@@ -206,7 +206,12 @@ class heuristicAIPlayer(player):
             resourcesNeededDict['ORE'] = 2 - self.resources['WHEAT']
 
         return resourcesNeededDict
-    
+
+    def heuristic_discard(self):
+        '''Function for the AI to choose a set of cards to discard upon rolling a 7
+        '''
+        return
+
     #Function to propose a trade -> give r1 and get r2
     #Propose a trade as a dictionary with {r1:amt_1, r2: amt_2} specifying the trade
     #def propose_trade_with_players(self):
