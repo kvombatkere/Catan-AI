@@ -183,7 +183,7 @@ python-jsonrpc-server @ file:///tmp/build/80754af9/python-jsonrpc-server_1600278
 python-language-server @ file:///tmp/build/80754af9/python-language-server_1600454544709/work
 pytz @ file:///tmp/build/80754af9/pytz_1606604771399/work
 PyWavelets @ file:///C:/ci/pywavelets_1601658407916/work
-pywin32==227
+pywin32==301
 pywin32-ctypes==0.2.0
 pywinpty==0.5.7
 PyYAML==5.3.1
