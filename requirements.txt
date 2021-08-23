@@ -91,7 +91,7 @@ jupyter==1.0.0
 jupyter-client @ file:///tmp/build/80754af9/jupyter_client_1601311786391/work
 jupyter-console @ file:///tmp/build/80754af9/jupyter_console_1598884538475/work
 jupyter-core @ file:///C:/ci/jupyter_core_1606149073702/work
-jupyterlab==2.2.6
+jupyterlab==2.2.10
 jupyterlab-pygments @ file:///tmp/build/80754af9/jupyterlab_pygments_1601490720602/work
 jupyterlab-server @ file:///tmp/build/80754af9/jupyterlab_server_1594164409481/work
 Keras==2.4.3
