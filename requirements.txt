@@ -168,7 +168,7 @@ pyerfa @ file:///C:/ci/pyerfa_1606860299350/work
 pyflakes==2.2.0
 pygame==1.9.6
 Pygments @ file:///tmp/build/80754af9/pygments_1607368905949/work
-PyJWT==1.7.1
+PyJWT==2.4.0
 pylint==2.5.0
 PyNaCl @ file:///C:/ci/pynacl_1595000047588/work
 pyodbc===4.0.0-unsupported
