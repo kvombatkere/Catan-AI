@@ -186,7 +186,7 @@ class heuristicAIPlayer(player):
         '''
         resourcesNeededDict = {}
         for resourceName in self.resources.keys():
-            if resourcesName != 'ORE' and self.resources[resourceName] == 0:
+            if resourceName != 'ORE' and self.resources[resourceName] == 0:
                 resourcesNeededDict[resourceName] = 1
 
         return resourcesNeededDict
