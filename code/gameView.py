@@ -1,5 +1,5 @@
-#Karan Vombatkere
-#Settlers of Catan, 2020
+#Settlers of Catan
+#Game view class implementation with pygame
 
 import pygame
 from hexTile import *

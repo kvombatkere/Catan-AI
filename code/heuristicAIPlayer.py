@@ -1,7 +1,6 @@
-#Karan Vombatkere
-#Settlers of Catan, 2020
+#Settlers of Catan
+#Heuristic AI class implementation
 
-#Imports
 from board import *
 from player import *
 import numpy as np

@@ -1,7 +1,6 @@
-#Karan Vombatkere
-#Settlers of Catan, 2020
+#Settlers of Catan
+#Game board class implementation
 
-#Imports
 from string import *
 import numpy as np
 from hexTile import *

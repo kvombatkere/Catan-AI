@@ -1,7 +1,6 @@
-#Karan Vombatkere
-#Settlers of Catan, 2020
+#Settlers of Catan
+#Gameplay class with pygame with AI players
 
-#Imports
 from board import *
 from gameView import *
 from player import *

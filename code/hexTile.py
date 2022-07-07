@@ -1,7 +1,6 @@
-#Karan Vombatkere
-#Settlers of Catan, 2020
+#Settlers of Catan
+#Vertex and Hextile class implementation
 
-#Imports
 import collections
 from hexLib import *
 

@@ -1,5 +1,5 @@
-#Karan Vombatkere
-#Settlers of Catan, 2020
+#Settlers of Catan
+#Testing work in progress with tensor flow for AI component
 
 import tensorflow as tf
 mnist = tf.keras.datasets.mnist

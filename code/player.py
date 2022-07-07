@@ -1,7 +1,6 @@
-#Karan Vombatkere
-#Settlers of Catan, 2020
+#Settlers of Catan
+#Player class implementation
 
-#Imports
 from board import *
 import numpy as np
 

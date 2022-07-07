@@ -1,5 +1,4 @@
-#Karan Vombatkere
-#Summer 2020
+#Settlers of Catan
 
 #Adapted from
 #Generated code -- CC0 -- No Rights Reserved -- http://www.redblobgames.com/grids/hexagons/

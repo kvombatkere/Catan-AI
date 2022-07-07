@@ -1,7 +1,7 @@
-#Karan Vombatkere
-#Settlers of Catan, 2020
+#Settlers of Catan
+#Model state class for AI training 
+# TO-DO
 
-# #Imports
 from board import *
 from catanGame import *
 from player import *
